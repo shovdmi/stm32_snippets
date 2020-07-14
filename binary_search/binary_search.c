@@ -25,3 +25,6 @@ ptrdiff_t leftmost_binary_search(size_t index_left, size_t index_right, void *va
  
 	return index_left;                                            // return l
 }
+
+
+// TODO: usage : if ((index_left >=0) && (index_left < array_size)) { ...
