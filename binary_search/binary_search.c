@@ -1,6 +1,7 @@
 #include <stddef.h>
 #include "binary_search.h"
 
+// TODO: index_right is included! so right = index_right + 1;
 ptrdiff_t leftmost_binary_search(size_t index_left, size_t index_right, void *value, comparer_t *compare, element_reader_t *read_element, void *element_ptr)
 {
 	ptrdiff_t index_diff;
@@ -31,8 +32,8 @@ ptrdiff_t leftmost_binary_search(size_t index_left, size_t index_right, void *va
 }
 
 /*---------------------------------------------------------------------------------------------------*/
-
-size_t find_minimum(size_t index_left, size_t index_right, comparer_t *compare, element_reader_t *read_element, void* element[3])
+// TODO: index_right is included! so right = index_right + 1;
+ptrdiff_t find_minimum(size_t index_left, size_t index_right, comparer_t *compare, element_reader_t *read_element, void* element[3])
 { 
 
   if ((*read_element)(element[0], index_left) < 0) { // { X, X , X, X, X, X } where X is an empty record
@@ -65,4 +66,44 @@ size_t find_minimum(size_t index_left, size_t index_right, comparer_t *compare, 
   }
 
   return index_left;                                             // return l
+}
+
+/*---------------------------------------------------------------------------------------------------*/
+// TODO: index_right is included! so right = index_right + 1;
+ptrdiff_t find_ring_buffer_element(size_t index_left, size_t index_right, void* value, comparer_t *compare, element_reader_t *read_element, void* element[3])
+{
+	size_t left;
+	size_t right;
+	size_t n;
+	// Find pivot
+	size_t res = find_minimum(index_left, index_right, compare, read_element, element);
+	
+	if (res < 0) { // empty file
+		return -1;
+	}
+	
+	// left sub-array
+	if (res > 0) {
+		left = index_left;
+		right = res - 1;
+		n = leftmost_binary_search( left, right, value, compare, read_element, element[0]);
+		if ((n >= index_left) && (n <= index_right)) {
+			(*read_element)(element[1], n);		
+			if ((*compare)(element[1], value) == 0) {
+				return n;
+			}			
+		}
+	}	
+	// right sub-array
+	left = res;
+	right = index_right;
+	n = leftmost_binary_search( left, right, value, compare, read_element, element[0]);	
+	if ((n >= index_left) && (n <= index_right)) {
+		(*read_element)(element[1], n);		
+		if ((*compare)(element[1], value) == 0) {
+			return n;
+		}			
+	}	
+	
+	return -1;
 }

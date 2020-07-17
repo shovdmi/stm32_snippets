@@ -13,8 +13,8 @@ void tearDown(void)
  *    TESTS
  ******************************************************************************/
 
-//           index:  0  1  2  3  4  5  6  7  8
-char test1_arr[] = { 1, 2, 3, 4, 4, 4, 5, 9, 10};
+//                  index:  0  1  2  3  4  5  6  7  8
+static char test1_arr[] = { 1, 2, 3, 4, 4, 4, 5, 9, 10};
 static int test1_cmp(char *x, char *y)
 {
 //	printf(" (%d vs %d) ", *x, *y);
@@ -37,7 +37,7 @@ void test1(void)
 	//printf("\nleftmost %d at %ld\n", x, leftmost_binary_search(0, sizeof(test1_arr), &x, (comparer_t*)&test1_cmp, (element_reader_t*)&test1_reader, &c));
 	
 	x = 1;
-    TEST_ASSERT_EQUAL_INT( 0, leftmost_binary_search( left, right, &x, \
+    TEST_ASSERT_EQUAL_INT(0, leftmost_binary_search( left, right, &x, \
 			(comparer_t*)&test1_cmp, (element_reader_t*)&test1_reader, &c));
 
 	x = 10;
@@ -55,6 +55,12 @@ void test1(void)
 			
 	x = 7;
     TEST_ASSERT_EQUAL_INT(7, leftmost_binary_search( left, right, &x, \
+			(comparer_t*)&test1_cmp, (element_reader_t*)&test1_reader, &c));
+
+	x = 1;
+	left = 0;
+	right = 0;
+    TEST_ASSERT_EQUAL_INT(0, leftmost_binary_search( left, right, &x, \
 			(comparer_t*)&test1_cmp, (element_reader_t*)&test1_reader, &c));
 
 }
