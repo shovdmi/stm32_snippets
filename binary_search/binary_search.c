@@ -76,7 +76,7 @@ ptrdiff_t find_ring_buffer_element(size_t index_left, size_t index_right, void* 
 	size_t right;
 	size_t n;
 	// Find pivot
-	size_t res = find_minimum(index_left, index_right, compare, read_element, element);
+	ptrdiff_t res = find_minimum(index_left, index_right, compare, read_element, element);
 	
 	if (res < 0) { // empty file
 		return -1;
