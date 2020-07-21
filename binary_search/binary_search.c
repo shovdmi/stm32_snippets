@@ -74,18 +74,18 @@ ptrdiff_t find_ring_buffer_element(size_t index_left, size_t index_right, void* 
 {
 	size_t left;
 	size_t right;
-	size_t n;
+	ptrdiff_t n;
 	// Find pivot
-	ptrdiff_t res = find_minimum(index_left, index_right, compare, read_element, element);
+	ptrdiff_t index_min = find_minimum(index_left, index_right, compare, read_element, element);
 	
-	if (res < 0) { // empty file
+	if (index_min < 0) { // empty file
 		return -1;
 	}
 	
 	// left sub-array
-	if (res > 0) {
+	if (index_min > 0) {
 		left = index_left;
-		right = res - 1;
+		right = index_min - 1;
 		n = leftmost_binary_search( left, right, value, compare, read_element, element[0]);
 		if ((n >= index_left) && (n <= index_right)) {
 			(*read_element)(element[1], n);		
@@ -95,7 +95,7 @@ ptrdiff_t find_ring_buffer_element(size_t index_left, size_t index_right, void* 
 		}
 	}	
 	// right sub-array
-	left = res;
+	left = index_min;
 	right = index_right;
 	n = leftmost_binary_search( left, right, value, compare, read_element, element[0]);	
 	if ((n >= index_left) && (n <= index_right)) {
