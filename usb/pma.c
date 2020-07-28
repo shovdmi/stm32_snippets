@@ -2,13 +2,14 @@
 #include <stdint.h>
 #include <string.h>
 
-#ifndef TEST
-//#define PMA_ADDRESS ((uintptr_t)0x40006000)
-uint16_t pool[128];
+#ifdef TEST
+	extern uint16_t pool[128];
 #else
-extern uint16_t pool[128];
-#define PMA_ADDRESS ((uint8_t*)&pool[0])
+	uint16_t pool[128];
 #endif
+
+#define PMA_ADDRESS ((uint8_t*)&pool[0])
+//#define PMA_ADDRESS ((uintptr_t)0x40006000)
 
 
 // https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#Common-Variable-Attributes
@@ -67,10 +68,10 @@ void read_from_pma(unsigned int pma_bytes_offset, uint8_t *dest_buf, int len)
 	uint8_t *pma_src_buf = (uint8_t *)PMA_ADDRESS + pma_bytes_offset;
 	for (int i = 0; i<len/2; i++)
 	{
-		((uint16_t*)dest_buf)[i] = (uint16_t)(((uint16_t*)pma_src_buf)[i]);
+		((uint16_t*)dest_buf)[i] = (uint16_t)(((uint32_t*)pma_src_buf)[i]);
 	}
 	if ((len & 0x01) == 0x01) { // i.e. len is odd
-		((uint8_t*)dest_buf)[len-1] = (uint8_t)(((uint16_t*)pma_src_buf)[len/2]);
+		((uint8_t*)dest_buf)[len-1] = (uint8_t)(((uint32_t*)pma_src_buf)[len/2]);
 	}
 }
 
