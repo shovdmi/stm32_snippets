@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <string.h>
 #include "pma.h"
-//#include <stdio.h>
+#include <stdio.h>
 
 #define LAST_INDEX(ARR) (sizeof(ARR) / sizeof(ARR[0]) - 1)
 uint8_t pool[1024];
@@ -66,5 +66,14 @@ void test_read_from_pma(void)
 		memset(inp_buf, 0, sizeof(inp_buf));
 		read_from_pma(0, inp_buf, n);
 		TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, inp_buf, n);
+	}
+
+	size_t shift = 1;
+	for (size_t n = 1; n < sizeof(expected) - shift; n++)
+	{
+		printf("testing %ld\n", n);
+		memset(inp_buf, 0, sizeof(inp_buf));
+		read_from_pma(shift, inp_buf, n - shift);
+		TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, n);
 	}
 }
