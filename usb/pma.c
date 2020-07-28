@@ -75,19 +75,13 @@ void read_from_pma(unsigned int pma_bytes_offset, uint8_t *dest_buf, int len)
 	}
 }
 
-/*void read_from_pma_new(size_t offset, void *dest_buf, size_t len)
+void read_from_pma_slow(size_t offset, void *dest_buf, size_t len)
 {
-	if ((offset & 0x01) == 0x01) {
-		((uint8_t*)dest_buf[0] = read_pma_u8(offset);
-	}
-	for (int i = 0; i < len / 2; i += 2)
+	for (int i = 0; i < len; i++ )
 	{
-		(uint16_t *)dest_buf[i] = read_pma_u16_aligned(i);
+		((uint8_t *)dest_buf)[i] = read_pma_u8(offset + i);
 	}
-	if (((offset+len) & 0x01) == 0x01) { // i.e. either len or offset is odd
-		((uint8_t*)dest_buf[len-1] = read_pma_u8(len/2);
-	}
-}*/
+}
 
 #if 0
 int main(void)

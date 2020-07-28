@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #define LAST_INDEX(ARR) (sizeof(ARR) / sizeof(ARR[0]) - 1)
-uint8_t pool[1024];
+uint8_t pool[2048];
 uint8_t expected[sizeof(pool) / 2];
 
 //           pool: 00 01 02 03  04 05 06 07  08 09 0A 0B  0C 0D 0E 0F
@@ -64,16 +64,16 @@ void test_read_from_pma(void)
 	for (size_t n = 1; n < sizeof(expected); n++)
 	{
 		memset(inp_buf, 0, sizeof(inp_buf));
-		read_from_pma(0, inp_buf, n);
+		read_from_pma_slow(0, inp_buf, n);
 		TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, inp_buf, n);
 	}
 
 	size_t shift = 1;
-	for (size_t n = 1; n < sizeof(expected) - shift; n++)
+	for (size_t n = 1; n < sizeof(expected); n++)
 	{
 		printf("testing %ld\n", n);
 		memset(inp_buf, 0, sizeof(inp_buf));
-		read_from_pma(shift, inp_buf, n - shift);
+		read_from_pma_slow(shift, inp_buf, n - shift);
 		TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, n);
 	}
 }
