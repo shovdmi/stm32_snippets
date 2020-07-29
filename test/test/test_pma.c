@@ -1,7 +1,10 @@
 #include "unity.h"
 #include <stdint.h>
 #include <string.h>
+#include <stdlib.h>
 #include "pma.h"
+#include "_syscalls.h"
+#include "_sbrk.h"
 #include <stdio.h>
 
 #define LAST_INDEX(ARR) (sizeof(ARR) / sizeof(ARR[0]) - 1)
@@ -68,12 +71,14 @@ void test_read_from_pma(void)
 		TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, inp_buf, n);
 	}
 
-	size_t shift = 1;
-	for (size_t n = 1; n < sizeof(expected); n++)
+	for (size_t shift = 0; shift < sizeof(expected)/2; shift++)
 	{
-		printf("testing %ld\n", n);
-		memset(inp_buf, 0, sizeof(inp_buf));
-		read_from_pma_slow(shift, inp_buf, n - shift);
-		TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, n);
+		for (size_t sz = 1; sz < sizeof(expected)/2; sz++)
+		{
+			//printf("testing shift=%ld, size=%ld\n", shift, sz);
+			memset(inp_buf, 0, sizeof(inp_buf));
+			read_from_pma_slow(shift, inp_buf, sz);
+			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
+		}
 	}
 }
