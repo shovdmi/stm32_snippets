@@ -3,13 +3,17 @@
 #include <string.h>
 #include <stdlib.h>
 #include "pma.h"
-#include "_syscalls.h"
-#include "_sbrk.h"
+//#include "_syscalls.h"
+//#include "_sbrk.h"
 #include <stdio.h>
 
 #define LAST_INDEX(ARR) (sizeof(ARR) / sizeof(ARR[0]) - 1)
-uint8_t pool[2048];
-uint8_t expected[sizeof(pool) / 2];
+#define PMA_SIZE (512)
+
+uint8_t pool[PMA_SIZE * 4];
+uint8_t expected[PMA_SIZE * 2];
+uint8_t inp_buf[PMA_SIZE * 4] = {0};
+const uint8_t zero_buf[PMA_SIZE * 4] = {0};
 
 //           pool: 00 01 02 03  04 05 06 07  08 09 0A 0B  0C 0D 0E 0F
 //expected[] ADDR: 00 01        04 05        08 09        0C 0D
@@ -62,23 +66,48 @@ void test_u16(void)
 
 void test_read_from_pma(void)
 {
-	uint8_t inp_buf[2048] = {0};
-
-	for (size_t n = 1; n < sizeof(expected); n++)
+	for (size_t sz = 1; sz < sizeof(expected); sz++)
 	{
 		memset(inp_buf, 0, sizeof(inp_buf));
-		read_from_pma_slow(0, inp_buf, n);
-		TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, inp_buf, n);
+		read_from_pma_slow(0, inp_buf, sz);
+		TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, inp_buf, sz);
 	}
+}
 
-	for (size_t shift = 0; shift < sizeof(expected)/2; shift++)
+// PMA: 00 01        02 03        04 05        06 07
+//                                 ^--shift=4
+void test_read_from_pma_shifted(void)
+{
+	for (size_t shift = 0; shift < PMA_SIZE; shift++)
 	{
-		for (size_t sz = 1; sz < sizeof(expected)/2; sz++)
+		//printf("shift=%ld\n", shift);
+		for (size_t sz = 1; sz < PMA_SIZE; sz++)
 		{
-			//printf("testing shift=%ld, size=%ld\n", shift, sz);
+			//printf("\tsize=%ld\n", sz);
 			memset(inp_buf, 0, sizeof(inp_buf));
 			read_from_pma_slow(shift, inp_buf, sz);
 			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
+			TEST_ASSERT_EQUAL_HEX8_ARRAY(zero_buf, inp_buf + sz, sizeof(inp_buf) - sz);
+		}
+	}
+}
+
+
+void test_read_from_pma_aligned(void)
+{
+	for (size_t shift = 0; shift < PMA_SIZE; shift += 2)
+	{
+		//printf("shift = %ld\n", shift);
+		for (size_t sz = 2; sz < PMA_SIZE; sz+=2)
+		{
+			//printf("\tsize = %ld\n", sz);
+			memset(inp_buf, 0, sizeof(inp_buf));
+			read_pma_aligned(shift, inp_buf, sz);
+			//char msg[128];
+			//snprintf(msg, sizeof(msg), "shift=%ld, size=%ld", shift, sz);
+			//TEST_ASSERT_EQUAL_HEX8_ARRAY_MESSAGE(expected + shift, inp_buf, sz, msg);
+			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
+			TEST_ASSERT_EQUAL_HEX8_ARRAY(zero_buf, inp_buf + sz, sizeof(inp_buf) - sz);
 		}
 	}
 }

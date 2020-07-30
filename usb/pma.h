@@ -11,4 +11,6 @@ void read_from_pma(unsigned int pma_bytes_offset, uint8_t *dest_buf, int len);
 
 void read_from_pma_slow(size_t offset, void *dest_buf, size_t len);
 
+void read_pma_aligned(size_t offset, void *dest_buf, size_t len);
+
 #endif // PMA_H

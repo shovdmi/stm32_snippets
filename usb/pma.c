@@ -83,22 +83,12 @@ void read_from_pma_slow(size_t offset, void *dest_buf, size_t len)
 	}
 }
 
-#if 0
-int main(void)
+void read_pma_aligned(size_t offset, void *dest_buf, size_t len)
 {
-  for(int i = 0; i < sizeof(pool); i++) {
-    *((uint8_t*)(&pool[0])+i) = (i % 255);
-  }
-
-  for (int i= 0; i < sizeof(pool) / 2; i+=2) {
-//    printf("pool[%d]: %d\n", i, read_pma_u8(i));
-  }
-
-  for (int i= 0; i < 64; i++) {
-    printf("pma[%d]: 0x%04X\n", i, read_pma_u16(i));
-    //printf("pma[%d]: 0x%04X\n", i, read_pma_u8(i));
-  }
-  printf("sizeof(pma_uint16_t)=%ld\n", sizeof(pma_uint16_t));
-  return 0;
+	size_t i = offset;
+	size_t j = 0;
+	for ( ; i < offset + len; i+=sizeof(uint16_t), j++)
+	{
+		((uint16_t*)dest_buf)[j] = read_pma_u16_aligned(i);
+	}
 }
-#endif
