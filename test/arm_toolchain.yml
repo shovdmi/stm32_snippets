@@ -37,6 +37,7 @@
   :source:
 #    - src/**
     - ../usb/**
+    - ../vendor/**
   :support:
     - test/support
   :libraries: []
@@ -95,18 +96,23 @@
       - -I"$": COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR
       - -I"$": COLLECTION_PATHS_RELEASE_TOOLCHAIN_INCLUDE
         #      - -nostdlib
-      - --specs=nosys.specs
 
   :test_linker:
-    :executable: arm-none-eabi-ld
+    :executable: arm-none-eabi-gcc
     :arguments:
+      - '-lm'
+      - '-mcpu=cortex-m3'
+      - -mthumb
+      - --specs=nosys.specs
+#      - "${1}"
+#      - -o "${2}"
+        #      - -msoft-float
+      - -T../vendor/STM32F107XC_FLASH.ld
+#      - -L/opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/lib
+#      - -L/opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1/thumb/v7/nofp/
+#      - -nostdlib
       - "${1}"
       - -o "${2}"
-        #      - -msoft-float
-      - -T../usb/STM32F107XC_FLASH.ld
-      - -L/opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/lib
-      - -L/opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1/thumb/v7/nofp/
-      - -nostdlib
 
 
 # LIBRARIES
