@@ -1,22 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include "pma.h"
 
-#ifdef TEST
-	extern uint16_t pool[128];
-#else
-	uint16_t pool[128];
-#endif
-
-#define PMA_ADDRESS ((uint8_t*)&pool[0])
-//#define PMA_ADDRESS ((uintptr_t)0x40006000)
-
-
-// https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#Common-Variable-Attributes
-// https://gcc.gnu.org/onlinedocs/gccint/Machine-Modes.html
-// https://gist.github.com/maxymania/b14c617af5063a21d2b1c7e84d024c74#file-gcc-typedefs-c
-
-typedef uint16_t __attribute__((mode(SI))) pma_uint16_t;
 
 uint16_t read_pma_u16_aligned(size_t offset)
 {

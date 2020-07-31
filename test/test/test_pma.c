@@ -2,18 +2,30 @@
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
-#include "pma.h"
-//#include "_syscalls.h"
-//#include "_sbrk.h"
 #include <stdio.h>
+#include "pma.h"
 
 #define LAST_INDEX(ARR) (sizeof(ARR) / sizeof(ARR[0]) - 1)
 #define PMA_SIZE (512)
 
-uint8_t pool[PMA_SIZE * 4];
-uint8_t expected[PMA_SIZE * 2];
 uint8_t inp_buf[PMA_SIZE * 4] = {0};
-const uint8_t zero_buf[PMA_SIZE * 4] = {0};
+uint8_t expected[PMA_SIZE * 2];
+static const uint8_t zero_buf[PMA_SIZE * 4] = {0};
+
+#ifdef STM32F107xC
+void pma_pool_init(void)
+{
+	return;
+}
+#else
+uint8_t pool[PMA_SIZE * 4];
+void pma_pool_init(void)
+{
+	for(size_t i=0; i < sizeof(pool); i++) {
+		pool[i] = (uint8_t)i;
+	}
+}
+#endif
 
 //           pool: 00 01 02 03  04 05 06 07  08 09 0A 0B  0C 0D 0E 0F
 //expected[] ADDR: 00 01        04 05        08 09        0C 0D
@@ -21,9 +33,7 @@ const uint8_t zero_buf[PMA_SIZE * 4] = {0};
 
 void setUp(void)
 {
-	for(size_t i=0; i < sizeof(pool); i++) {
-		pool[i] = (uint8_t)i;
-	}
+	pma_pool_init();
 
 	for(size_t i=0; i < sizeof(expected); i+=2) {
 		expected[i] = (uint8_t)(i*2);
