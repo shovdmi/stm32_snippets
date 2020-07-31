@@ -2,4 +2,4 @@ $ ceedling project:binary_search clean clobber test:test_binary_search test:find
 
 $ ceedling project:pma clean clobber test:test_pma
 
-$ ceedling project:arm_toolchain clean clobber test:test_pma
+$ ceedling verbosity[4] project:arm_toolchain clean clobber test:test_pma

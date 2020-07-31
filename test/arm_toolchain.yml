@@ -27,7 +27,7 @@
 :environment:
 
 :extension:
-  :executable: .out
+  :executable: .elf
 
 :paths:
   :test:
@@ -37,10 +37,14 @@
   :source:
 #    - src/**
     - ../usb/**
-    - ../vendor/**
+    - ../stm32/**
   :support:
     - test/support
   :libraries: []
+
+:files:
+  :support:
+    - ../stm32/system_stm32f1xx.c
 
 :defines:
   # in order to add common defines:
@@ -50,6 +54,10 @@
   :test:
     - *common_defines
     - TEST
+    - STM32F107xC
+    - CMOCK_MEM_ALIGN=1
+    - CMOCK_MEM_SIZE=1024
+    - CMOCK_MEM_STATIC
   :test_preprocess:
     - *common_defines
     - TEST
@@ -87,31 +95,27 @@
     :arguments:
       - -mcpu=cortex-m3
       - -mthumb
-        #      - -x c
       - -c
       - "${1}"
       - -o "${2}"
       - -Wall
-      - -Os
+      - -Og
+      - -ggdb
       - -I"$": COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR
       - -I"$": COLLECTION_PATHS_RELEASE_TOOLCHAIN_INCLUDE
-        #      - -nostdlib
+      - -D$: COLLECTION_DEFINES_TEST_AND_VENDOR
 
   :test_linker:
     :executable: arm-none-eabi-gcc
     :arguments:
-      - '-lm'
       - '-mcpu=cortex-m3'
       - -mthumb
       - --specs=nosys.specs
-#      - "${1}"
-#      - -o "${2}"
-        #      - -msoft-float
-      - -T../vendor/STM32F107XC_FLASH.ld
-#      - -L/opt/gcc-arm-none-eabi-9-2020-q2-update/arm-none-eabi/lib
-#      - -L/opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1/thumb/v7/nofp/
-#      - -nostdlib
+      - -Og
+      - -ggdb      
+      - -T../stm32/STM32F107XC_FLASH.ld
       - "${1}"
+      - ../stm32/startup.o
       - -o "${2}"
 
 
