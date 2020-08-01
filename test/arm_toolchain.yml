@@ -54,10 +54,11 @@
   :test:
     - *common_defines
     - TEST
-    - STM32F107xC
+    - STM32F103x6
     - CMOCK_MEM_ALIGN=1
     - CMOCK_MEM_SIZE=1024
     - CMOCK_MEM_STATIC
+    - RDIMON
   :test_preprocess:
     - *common_defines
     - TEST
@@ -101,6 +102,7 @@
       - -Wall
       - -Og
       - -ggdb
+      - --specs=rdimon.specs
       - -I"$": COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR
       - -I"$": COLLECTION_PATHS_RELEASE_TOOLCHAIN_INCLUDE
       - -D$: COLLECTION_DEFINES_TEST_AND_VENDOR
@@ -110,10 +112,12 @@
     :arguments:
       - '-mcpu=cortex-m3'
       - -mthumb
-      - --specs=nosys.specs
+#      - --specs=nosys.specs
       - -Og
-      - -ggdb      
-      - -T../stm32/STM32F107XC_FLASH.ld
+      - -ggdb
+      - --specs=rdimon.specs
+      - -lrdimon
+      - -T../stm32/STM32F103X6_FLASH.ld
       - "${1}"
       - ../stm32/startup.o
       - -o "${2}"
