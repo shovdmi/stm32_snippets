@@ -117,10 +117,10 @@ void test_read_from_pma_slow(void)
 		memset(inp_buf_pool, 0, sizeof(inp_buf_pool));
 		read_from_pma_slow(0, inp_buf, sz);
 		TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, inp_buf, sz);
-		TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + sz, PMA_BYTES_NUMBER - sz);
+		TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, PMA_BYTES_NUMBER - sz);
 
 		TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool, PRE_BUF_LENGTH);
-		TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
+		TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PRE_BUF_LENGTH + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
 	}
 }
 
@@ -135,7 +135,7 @@ void test_read_from_pma_zero_slow(void)
 	TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf, PMA_BYTES_NUMBER);
 
 	TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool, PRE_BUF_LENGTH);
-	TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
+	TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PRE_BUF_LENGTH + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
 }
 
 /** \brief Test of reading ZERO bytes from ANY PMA address
@@ -151,7 +151,7 @@ void test_read_from_pma_zero(void)
 		TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf, PMA_BYTES_NUMBER);
 
 		TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool, PRE_BUF_LENGTH);
-		TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
+		TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PRE_BUF_LENGTH + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
 	}
 }
 
@@ -171,7 +171,7 @@ void test_read_from_pma_shifted(void)
 			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, PMA_BYTES_NUMBER - sz);
 
 			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool, PRE_BUF_LENGTH);
-			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
+			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PRE_BUF_LENGTH + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
 		}
 	}
 }
@@ -191,7 +191,7 @@ void test_read_from_pma_aligned_even_bytes_number(void)
 			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, PMA_BYTES_NUMBER - sz);
 
 			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool, PRE_BUF_LENGTH);
-			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
+			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PRE_BUF_LENGTH + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
 		}
 	}
 }
@@ -217,7 +217,7 @@ void test_read_from_pma_aligned(void)
 			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, PMA_BYTES_NUMBER - sz);
 
 			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool, PRE_BUF_LENGTH);
-			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
+			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PRE_BUF_LENGTH + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
 		}
 	}
 }
@@ -242,7 +242,7 @@ void test_read_from_pma_any(void)
 			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, PMA_BYTES_NUMBER - sz);
 
 			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool, PRE_BUF_LENGTH);
-			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
+			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf_pool + PRE_BUF_LENGTH + PMA_BYTES_NUMBER, POST_BUF_LENGTH);
 		}
 	}
 }
