@@ -121,7 +121,27 @@ void test_read_from_pma_shifted(void)
 	}
 }
 
+/** \brief Test of reading EVEN number of bytes from ALIGNED to 16bit PMA address
+ *
+ */
+void test_read_from_pma_aligned_even_bytes_number(void)
+{
+	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift += 2)
+	{
+		for (size_t sz = 2; sz < (PMA_BYTES_NUMBER - shift); sz += 2)
+		{
+			memset(inp_buf, 0, sizeof(inp_buf));
+			read_pma_aligned(shift, inp_buf, sz);
+			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
+			TEST_ASSERT_EQUAL_HEX8_ARRAY(zero_buf, inp_buf + sz, sizeof(inp_buf) - sz);
+		}
+	}
+}
 
+
+/** \brief Test of reading ANY number of bytes from ALIGNED to 16bit PMA address
+ *
+ */
 void test_read_from_pma_aligned(void)
 {
 	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift += 2)
@@ -131,7 +151,7 @@ void test_read_from_pma_aligned(void)
 		{
 			//printf("\tsize = %ld\n", sz);
 			memset(inp_buf, 0, sizeof(inp_buf));
-			read_pma_aligned(shift, inp_buf, sz);
+			read_pma(shift, inp_buf, sz);
 			//char msg[128];
 			//snprintf(msg, sizeof(msg), "shift=%ld, size=%ld", shift, sz);
 			//TEST_ASSERT_EQUAL_HEX8_ARRAY_MESSAGE(expected + shift, inp_buf, sz, msg);
