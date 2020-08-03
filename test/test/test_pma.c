@@ -33,6 +33,9 @@ void pma_pool_init(void)
 
 void setUp(void)
 {
+#ifdef RDIMON
+	initialise_monitor_handles();
+#endif
 	pma_pool_init();
 
 	for(size_t i=0; i < sizeof(expected); i+=2) {

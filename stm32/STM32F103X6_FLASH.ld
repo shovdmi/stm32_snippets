@@ -40,8 +40,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 32K
-RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 10K
+FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 64K
+RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 20K
 }
 
 /* Define output sections */
@@ -147,6 +147,7 @@ SECTIONS
     . = ALIGN(4);
     PROVIDE ( end = . );
     PROVIDE ( _end = . );
+    PROVIDE ( __end__ = . );
     . = . + _Min_Heap_Size;
     . = . + _Min_Stack_Size;
     . = ALIGN(4);
