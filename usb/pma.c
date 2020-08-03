@@ -79,6 +79,18 @@ void read_pma_aligned(size_t offset, void *dest_buf, size_t length)
 
 void read_pma(size_t offset, void *dest_buf, size_t length)
 {
+	size_t offset_lsb = offset & 0x01U;
+
+	if (offset_lsb == 0x01U)
+	{
+		((uint8_t*)dest_buf)[0] = read_pma_u8(offset);
+		dest_buf = ((uint8_t*)dest_buf) + 1;
+		length--;
+	}
+
+	// Here we increase offset to be aligned to 16bit
+	size_t offset_aligned = offset + offset_lsb;
+
 	size_t length_lsb = length & 0x01U;
 	size_t length_aligned = length - length_lsb;
 

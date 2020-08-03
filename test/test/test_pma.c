@@ -160,3 +160,25 @@ void test_read_from_pma_aligned(void)
 		}
 	}
 }
+
+/** \brief Test of reading ANY number of bytes from ANY PMA address
+ *
+ */
+void test_read_from_pma_any(void)
+{
+	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift += 1)
+	{
+		printf("shift = %ld\n", shift);
+		for (size_t sz = 1; sz < (PMA_BYTES_NUMBER - shift); sz += 1)
+		{
+			printf("\tsize = %ld\n", sz);
+			memset(inp_buf, 0, sizeof(inp_buf));
+			read_pma(shift, inp_buf, sz);
+			char msg[128];
+			snprintf(msg, sizeof(msg), "shift=%ld, size=%ld\n", shift, sz);
+			TEST_ASSERT_EQUAL_HEX8_ARRAY_MESSAGE(expected + shift, inp_buf, sz, msg);
+			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
+			TEST_ASSERT_EQUAL_HEX8_ARRAY(zero_buf, inp_buf + sz, sizeof(inp_buf) - sz);
+		}
+	}
+}
