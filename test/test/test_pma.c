@@ -24,7 +24,6 @@
 
 uint8_t inp_buf[PMA_BYTES_NUMBER] = {0};
 uint8_t expected[PMA_BYTES_NUMBER];
-static const uint8_t zero_buf[sizeof(inp_buf)] = {0};
 
 #ifdef STM32F107xC
 void pma_pool_init(void)
@@ -116,7 +115,7 @@ void test_read_from_pma_shifted(void)
 			memset(inp_buf, 0, sizeof(inp_buf));
 			read_from_pma_slow(shift, inp_buf, sz);
 			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
-			TEST_ASSERT_EQUAL_HEX8_ARRAY(zero_buf, inp_buf + sz, sizeof(inp_buf) - sz);
+			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, sizeof(inp_buf) - sz);
 		}
 	}
 }
@@ -133,7 +132,7 @@ void test_read_from_pma_aligned_even_bytes_number(void)
 			memset(inp_buf, 0, sizeof(inp_buf));
 			read_pma_aligned(shift, inp_buf, sz);
 			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
-			TEST_ASSERT_EQUAL_HEX8_ARRAY(zero_buf, inp_buf + sz, sizeof(inp_buf) - sz);
+			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, sizeof(inp_buf) - sz);
 		}
 	}
 }
@@ -156,7 +155,7 @@ void test_read_from_pma_aligned(void)
 			//snprintf(msg, sizeof(msg), "shift=%ld, size=%ld", shift, sz);
 			//TEST_ASSERT_EQUAL_HEX8_ARRAY_MESSAGE(expected + shift, inp_buf, sz, msg);
 			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
-			TEST_ASSERT_EQUAL_HEX8_ARRAY(zero_buf, inp_buf + sz, sizeof(inp_buf) - sz);
+			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, sizeof(inp_buf) - sz);
 		}
 	}
 }
@@ -178,7 +177,7 @@ void test_read_from_pma_any(void)
 			snprintf(msg, sizeof(msg), "shift=%ld, size=%ld\n", shift, sz);
 			TEST_ASSERT_EQUAL_HEX8_ARRAY_MESSAGE(expected + shift, inp_buf, sz, msg);
 			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
-			TEST_ASSERT_EQUAL_HEX8_ARRAY(zero_buf, inp_buf + sz, sizeof(inp_buf) - sz);
+			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, sizeof(inp_buf) - sz);
 		}
 	}
 }
