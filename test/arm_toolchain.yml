@@ -106,6 +106,8 @@
       - -I"$": COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR
       - -I"$": COLLECTION_PATHS_RELEASE_TOOLCHAIN_INCLUDE
       - -D$: COLLECTION_DEFINES_TEST_AND_VENDOR
+      - -ffunction-sections
+      - -fdata-sections
 
   :test_linker:
     :executable: arm-none-eabi-gcc
@@ -121,6 +123,8 @@
       - "${1}"
       - ../stm32/startup.o
       - -o "${2}"
+      - -Wl,--gc-sections
+      - -Wl,-Map=output2.map
 
 
 # LIBRARIES
