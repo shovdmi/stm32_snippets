@@ -93,13 +93,41 @@ void test_u16(void)
 	TEST_ASSERT_EQUAL_HEX16(0x0D0C, read_pma_u16(6));
 }
 
-void test_read_from_pma(void)
+/** \brief Test of byte-by-byte reading method
+ *
+ */
+void test_read_from_pma_slow(void)
 {
 	for (size_t sz = 1; sz < sizeof(expected); sz++)
 	{
 		memset(inp_buf, 0, sizeof(inp_buf));
 		read_from_pma_slow(0, inp_buf, sz);
 		TEST_ASSERT_EQUAL_HEX8_ARRAY(expected, inp_buf, sz);
+	}
+}
+
+/** \brief Test of slow reading ZERO bytes from ANY PMA address
+ *
+ */
+void test_read_from_pma_zero_slow(void)
+{
+	size_t sz = 0;
+	memset(inp_buf, 0, sizeof(inp_buf));
+	read_from_pma_slow(0, inp_buf, sz);
+	TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf, sizeof(inp_buf));
+}
+
+/** \brief Test of reading ZERO bytes from ANY PMA address
+ *
+ */
+void test_read_from_pma_zero(void)
+{
+	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift += 1)
+	{
+		size_t sz = 0;
+		memset(inp_buf, 0, sizeof(inp_buf));
+		read_pma(shift, inp_buf, sz);
+		TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf, sizeof(inp_buf));
 	}
 }
 

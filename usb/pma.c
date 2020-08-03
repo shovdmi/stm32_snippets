@@ -79,6 +79,10 @@ void read_pma_aligned(size_t offset, void *dest_buf, size_t length)
 
 void read_pma(size_t offset, void *dest_buf, size_t length)
 {
+	//assert(length > 0);
+	if (length == 0)
+		return;
+	
 	size_t offset_lsb = offset & 0x01U;
 
 	if (offset_lsb == 0x01U)
