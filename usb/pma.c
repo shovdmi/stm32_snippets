@@ -17,7 +17,6 @@ uint8_t read_pma_u8(size_t offset)
 {
 	pma_uint16_t val;
 
-	// int type of last_bit is used as bool below
 	size_t offset_lsb = offset & 0x01U;
 	if (offset_lsb == 0x01U)
 	{
@@ -34,7 +33,7 @@ uint8_t read_pma_u8(size_t offset)
 
 uint16_t read_pma_u16(size_t offset)
 {
-	int offset_lsb = offset & 0x01U;
+	size_t offset_lsb = offset & 0x01U;
 
 	if (offset_lsb == 0x01U)
 	{
@@ -49,10 +48,10 @@ uint16_t read_pma_u16(size_t offset)
 }
 
 
-void read_from_pma(unsigned int pma_bytes_offset, uint8_t *dest_buf, int len)
+void read_from_pma(size_t pma_bytes_offset, uint8_t *dest_buf, size_t len)
 {
 	uint8_t *pma_src_buf = (uint8_t *)PMA_ADDRESS + pma_bytes_offset;
-	for (int i = 0; i<len/2; i++)
+	for (size_t i = 0; i<len/2; i++)
 	{
 		((uint16_t*)dest_buf)[i] = (uint16_t)(((uint32_t*)pma_src_buf)[i]);
 	}
@@ -63,7 +62,7 @@ void read_from_pma(unsigned int pma_bytes_offset, uint8_t *dest_buf, int len)
 
 void read_from_pma_slow(size_t offset, void *dest_buf, size_t len)
 {
-	for (int i = 0; i < len; i++ )
+	for (size_t i = 0; i < len; i++ )
 	{
 		((uint8_t *)dest_buf)[i] = read_pma_u8(offset + i);
 	}
