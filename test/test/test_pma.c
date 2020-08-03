@@ -68,12 +68,19 @@ void tearDown(void)
 {
 }
 
+
+/** \brief Test of correct generation of ethalon sequence
+ *
+ */
 void test_expected_array(void)
 {
 	uint8_t expected_arr[] = { 0x00, 0x01, 0x04, 0x05, 0x08, 0x09, 0x0C, 0x0D};
 	TEST_ASSERT_EQUAL_HEX8_ARRAY(expected_arr, expected, sizeof(expected_arr));
 }
 
+/** \brief Test of reading 8-bit integer from aligned and unaligned to 16-bit PMA address
+ *
+ */
 void test_u8(void)
 {
 	TEST_ASSERT_EQUAL_HEX8( 0, read_pma_u8(0));
@@ -82,6 +89,9 @@ void test_u8(void)
 	TEST_ASSERT_EQUAL_HEX8( 5, read_pma_u8(3));
 }
 
+/** \brief Test of reading 16-bit integer from aligned and unaligned to 16-bit PMA address
+ *
+ */
 void test_u16(void)
 {
 	TEST_ASSERT_EQUAL_HEX16(0x0100, read_pma_u16(0));
