@@ -6,11 +6,25 @@
 #include "pma.h"
 
 #define LAST_INDEX(ARR) (sizeof(ARR) / sizeof(ARR[0]) - 1)
-#define PMA_SIZE (512)
 
-uint8_t inp_buf[PMA_SIZE * 4] = {0};
-uint8_t expected[PMA_SIZE * 2];
-static const uint8_t zero_buf[PMA_SIZE * 4] = {0};
+#define PMA_BYTES_NUMBER (256)
+
+// 2 data bytes per 4 address bytes   ||     // 2 data bytes per 2 address bytes
+// 0x40006000   pma[0]                ||     // 0x40006000   pma[0]
+// 0x40006001   pma[1]                ||     // 0x40006001   pma[1]
+// 0x40006002    ---                  ||     // 0x40006002   pma[2]
+// 0x40006003    ---                  ||     // 0x40006003   pma[3]
+// 0x40006004   pma[2]                ||     // 0x40006004   pma[4]
+// 0x40006005   pma[3]                ||     // 0x40006005   pma[5]
+// 0x40006006    ---                  ||     // 0x40006006   pma[6]
+// 0x40006007    ---                  ||     // 0x40006007   pma[7]
+//  ...                               ||     //  ...
+#define PMA_MULT (sizeof(pma_uint16_t) / sizeof(uint16_t))
+#define PMA_SIZE (PMA_BYTES_NUMBER * PMA_MULT)
+
+uint8_t inp_buf[PMA_BYTES_NUMBER] = {0};
+uint8_t expected[PMA_BYTES_NUMBER];
+static const uint8_t zero_buf[sizeof(inp_buf)] = {0};
 
 #ifdef STM32F107xC
 void pma_pool_init(void)
@@ -18,7 +32,7 @@ void pma_pool_init(void)
 	return;
 }
 #else
-uint8_t pool[PMA_SIZE * 4];
+uint8_t pool[PMA_SIZE];
 void pma_pool_init(void)
 {
 	for(size_t i=0; i < sizeof(pool); i++) {
@@ -38,11 +52,13 @@ void setUp(void)
 #endif
 	pma_pool_init();
 
-	for(size_t i=0; i < sizeof(expected); i+=2) {
+	for(size_t i=0; i < sizeof(expected); i+=2)
+	{
 		expected[i] = (uint8_t)(i*2);
 		expected[i+1] = (uint8_t)(i*2 + 1);
 	}
-	/*for(size_t i=0; i < sizeof(expected); i++) {
+	/*for(size_t i=0; i < sizeof(expected); i++)
+	{
 		printf("%02X, ", expected[i]);
 	}
 	printf("\n");*/
@@ -91,10 +107,10 @@ void test_read_from_pma(void)
 //                                 ^--shift=4
 void test_read_from_pma_shifted(void)
 {
-	for (size_t shift = 0; shift < PMA_SIZE; shift++)
+	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift++)
 	{
 		//printf("shift=%ld\n", shift);
-		for (size_t sz = 1; sz < PMA_SIZE; sz++)
+		for (size_t sz = 1; sz < (PMA_BYTES_NUMBER - shift); sz++)
 		{
 			//printf("\tsize=%ld\n", sz);
 			memset(inp_buf, 0, sizeof(inp_buf));
@@ -108,10 +124,10 @@ void test_read_from_pma_shifted(void)
 
 void test_read_from_pma_aligned(void)
 {
-	for (size_t shift = 0; shift < PMA_SIZE; shift += 2)
+	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift += 2)
 	{
 		//printf("shift = %ld\n", shift);
-		for (size_t sz = 2; sz < PMA_SIZE; sz+=2)
+		for (size_t sz = 2; sz < (PMA_BYTES_NUMBER - shift); sz += 2)
 		{
 			//printf("\tsize = %ld\n", sz);
 			memset(inp_buf, 0, sizeof(inp_buf));
