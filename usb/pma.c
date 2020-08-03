@@ -69,12 +69,17 @@ void read_from_pma_slow(size_t offset, void *dest_buf, size_t len)
 	}
 }
 
-void read_pma_aligned(size_t offset, void *dest_buf, size_t len)
+void read_pma_aligned(size_t offset, void *dest_buf, size_t length)
 {
-	size_t i = offset;
-	size_t j = 0;
-	for ( ; i < offset + len; i+=sizeof(uint16_t), j++)
+	size_t length_lsb = length & 0x01U;
+	size_t length_aligned = length - length_lsb;
+
+	for (size_t i = offset, j = 0 ; i < offset + length_aligned; i+=sizeof(uint16_t), j++)
 	{
 		((uint16_t*)dest_buf)[j] = read_pma_u16_aligned(i);
+	}
+	if (length_lsb == 0x01U)
+	{
+		((uint8_t*)dest_buf)[length-1] = read_pma_u8(offset + length - 1); //read_pma_u16_aligned(i);
 	}
 }

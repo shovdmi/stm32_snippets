@@ -127,7 +127,7 @@ void test_read_from_pma_aligned(void)
 	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift += 2)
 	{
 		//printf("shift = %ld\n", shift);
-		for (size_t sz = 2; sz < (PMA_BYTES_NUMBER - shift); sz += 2)
+		for (size_t sz = 1; sz < (PMA_BYTES_NUMBER - shift); sz += 1)
 		{
 			//printf("\tsize = %ld\n", sz);
 			memset(inp_buf, 0, sizeof(inp_buf));
