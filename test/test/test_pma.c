@@ -9,6 +9,16 @@
 
 #define PMA_BYTES_NUMBER (256)
 
+
+uint8_t inp_buf[PMA_BYTES_NUMBER] = {0};
+uint8_t expected[PMA_BYTES_NUMBER];
+
+#ifdef STM32F107xC
+void pma_pool_init(void)
+{
+	return;
+}
+#else
 // 2 data bytes per 4 address bytes   ||     // 2 data bytes per 2 address bytes
 // 0x40006000   pma[0]                ||     // 0x40006000   pma[0]
 // 0x40006001   pma[1]                ||     // 0x40006001   pma[1]
@@ -22,15 +32,6 @@
 #define PMA_MULT (sizeof(pma_uint16_t) / sizeof(uint16_t))
 #define PMA_SIZE (PMA_BYTES_NUMBER * PMA_MULT)
 
-uint8_t inp_buf[PMA_BYTES_NUMBER] = {0};
-uint8_t expected[PMA_BYTES_NUMBER];
-
-#ifdef STM32F107xC
-void pma_pool_init(void)
-{
-	return;
-}
-#else
 uint8_t pool[PMA_SIZE];
 void pma_pool_init(void)
 {
@@ -121,7 +122,7 @@ void test_read_from_pma_shifted(void)
 }
 
 /** \brief Test of reading EVEN number of bytes from ALIGNED to 16bit PMA address
- *
+ *  ANY* - less than size of PMA
  */
 void test_read_from_pma_aligned_even_bytes_number(void)
 {
@@ -138,8 +139,8 @@ void test_read_from_pma_aligned_even_bytes_number(void)
 }
 
 
-/** \brief Test of reading ANY number of bytes from ALIGNED to 16bit PMA address
- *
+/** \brief Test of reading ANY* number of bytes from ALIGNED to 16bit PMA address
+ *  ANY* - less than size of PMA
  */
 void test_read_from_pma_aligned(void)
 {
@@ -160,22 +161,22 @@ void test_read_from_pma_aligned(void)
 	}
 }
 
-/** \brief Test of reading ANY number of bytes from ANY PMA address
- *
+/** \brief Test of reading ANY* number of bytes from ANY PMA address
+ *  ANY* - less than size of PMA
  */
 void test_read_from_pma_any(void)
 {
 	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift += 1)
 	{
-		printf("shift = %ld\n", shift);
+		//printf("shift = %ld\n", shift);
 		for (size_t sz = 1; sz < (PMA_BYTES_NUMBER - shift); sz += 1)
 		{
-			printf("\tsize = %ld\n", sz);
+			//printf("\tsize = %ld\n", sz);
 			memset(inp_buf, 0, sizeof(inp_buf));
 			read_pma(shift, inp_buf, sz);
-			char msg[128];
-			snprintf(msg, sizeof(msg), "shift=%ld, size=%ld\n", shift, sz);
-			TEST_ASSERT_EQUAL_HEX8_ARRAY_MESSAGE(expected + shift, inp_buf, sz, msg);
+			//char msg[128];
+			//snprintf(msg, sizeof(msg), "shift=%ld, size=%ld\n", shift, sz);
+			//TEST_ASSERT_EQUAL_HEX8_ARRAY_MESSAGE(expected + shift, inp_buf, sz, msg);
 			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
 			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, sizeof(inp_buf) - sz);
 		}
