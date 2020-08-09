@@ -17,7 +17,7 @@ uint8_t inp_buf_pool[PRE_BUF_LENGTH + PMA_BYTES_NUMBER + POST_BUF_LENGTH] = {0};
 uint8_t* const inp_buf = &inp_buf_pool[PRE_BUF_LENGTH];
 uint8_t expected[PMA_BYTES_NUMBER];
 
-#ifdef STM32F107xC
+#ifdef TEST_ON_TARGET
 void pma_pool_init(void)
 {
 	return;

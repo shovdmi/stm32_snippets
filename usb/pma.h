@@ -1,11 +1,11 @@
 #ifndef PMA_H
 #define PMA_H
 
-#ifdef STM32F107xC
+#ifdef TEST_ON_TARGET
     #define PMA_ADDRESS ((uintptr_t)0x40006000)
 #else
-	#ifdef TEST
-		extern uint8_t pool[];
+  #ifdef TEST
+	extern uint8_t pool[];
     	#define PMA_ADDRESS (&pool[0])
   #endif
 #endif

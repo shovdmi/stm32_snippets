@@ -54,6 +54,7 @@
   :test:
     - *common_defines
     - TEST
+    - TEST_ON_TARGET
     - STM32F103x6
     - CMOCK_MEM_ALIGN=1
     - CMOCK_MEM_SIZE=1024
@@ -62,6 +63,7 @@
   :test_preprocess:
     - *common_defines
     - TEST
+    - TEST_ON_TARGET
 
 :cmock:
   :mock_prefix: mock_
