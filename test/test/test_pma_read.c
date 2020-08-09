@@ -18,8 +18,15 @@ uint8_t* const inp_buf = &inp_buf_pool[PRE_BUF_LENGTH];
 uint8_t expected[PMA_BYTES_NUMBER];
 
 #ifdef TEST_ON_TARGET
+int log_printf(char *fmt, uint32_t param)
+{
+	return printf(fmt, param);
+}
+
 void pma_pool_init(void)
 {
+	*(((pma_uint16_t*)PMA_ADDRESS) + 0) = 0xABCD;
+	*(((pma_uint16_t*)PMA_ADDRESS) + 4) = 0x147B;
 	return;
 }
 #else
@@ -33,7 +40,6 @@ void pma_pool_init(void)
 // 0x40006006    ---                  ||     // 0x40006006   pma[6]
 // 0x40006007    ---                  ||     // 0x40006007   pma[7]
 //  ...                               ||     //  ...
-#define PMA_MULT (sizeof(pma_uint16_t) / sizeof(uint16_t))
 #define PMA_SIZE (PMA_BYTES_NUMBER * PMA_MULT)
 
 uint8_t pool[PMA_SIZE];
@@ -45,6 +51,8 @@ void pma_pool_init(void)
 }
 #endif
 
+#define PMA_MULT (sizeof(pma_uint16_t) / sizeof(uint16_t))
+
 //           pool: 00 01 02 03  04 05 06 07  08 09 0A 0B  0C 0D 0E 0F
 //expected[] ADDR: 00 01        04 05        08 09        0C 0D
 //            PMA: 00 01        02 03        04 05        06 07
@@ -55,6 +63,20 @@ void setUp(void)
 	initialise_monitor_handles();
 #endif
 	pma_pool_init();
+	log_printf("%c", '\n');
+	for(size_t i=0; i < PMA_BYTES_NUMBER / PMA_MULT; i++)
+	{
+		if ( (i & 0x07UL ) == 0) {
+			log_printf("%c",'\n');
+		}
+		else { 
+			log_printf("%c",' ');
+		}
+		pma_uint16_t data = *(((pma_uint16_t*)PMA_ADDRESS) + i);
+		log_printf("%02X", data & 0xFF);
+		log_printf(" %02X", (data >> 8) & 0xFF);
+	}
+	log_printf("%c",'\n');
 
 	for(size_t i=0; i < sizeof(expected); i+=2)
 	{
@@ -63,9 +85,9 @@ void setUp(void)
 	}
 	/*for(size_t i=0; i < sizeof(expected); i++)
 	{
-		printf("%02X, ", expected[i]);
+		log_printf("%02X, ", expected[i]);
 	}
-	printf("\n");*/
+	log_printf("%c",'\n');*/
 }
 
 void tearDown(void)
@@ -161,10 +183,10 @@ void test_read_from_pma_shifted(void)
 {
 	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift++)
 	{
-		//printf("shift=%ld\n", shift);
+		//log_printf("shift=%ld\n", shift);
 		for (size_t sz = 1; sz < (PMA_BYTES_NUMBER - shift); sz++)
 		{
-			//printf("\tsize=%ld\n", sz);
+			//log_printf("\tsize=%ld\n", sz);
 			memset(inp_buf_pool, 0, sizeof(inp_buf_pool));
 			read_from_pma_slow(shift, inp_buf, sz);
 			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
@@ -204,10 +226,10 @@ void test_read_from_pma_aligned(void)
 {
 	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift += 2)
 	{
-		//printf("shift = %ld\n", shift);
+		//log_printf("shift = %ld\n", shift);
 		for (size_t sz = 1; sz < (PMA_BYTES_NUMBER - shift); sz += 1)
 		{
-			//printf("\tsize = %ld\n", sz);
+			//log_printf("\tsize = %ld\n", sz);
 			memset(inp_buf_pool, 0, sizeof(inp_buf_pool));
 			read_pma(shift, inp_buf, sz);
 			//char msg[128];
@@ -229,10 +251,10 @@ void test_read_from_pma_any(void)
 {
 	for (size_t shift = 0; shift < PMA_BYTES_NUMBER; shift += 1)
 	{
-		//printf("shift = %ld\n", shift);
+		//log_printf("shift = %ld\n", shift);
 		for (size_t sz = 1; sz < (PMA_BYTES_NUMBER - shift); sz += 1)
 		{
-			//printf("\tsize = %ld\n", sz);
+			//log_printf("\tsize = %ld\n", sz);
 			memset(inp_buf_pool, 0, sizeof(inp_buf_pool));
 			read_pma(shift, inp_buf, sz);
 			//char msg[128];
