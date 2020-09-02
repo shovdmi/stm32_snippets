@@ -96,6 +96,13 @@ uint32_t w0_write(uint32_t value, uint32_t w0_register, uint32_t w0_mask)
 	return w0_register_new;
 }
 
+uint32_t t_write(uint32_t value, uint32_t t_register, uint32_t t_mask)
+{
+	value = value & t_mask;
+	uint32_t t_register_new = t_register ^ value;
+	return t_register_new;
+}
+
 uint32_t t_set_bits(uint32_t value, uint32_t t_register, uint32_t t_mask)
 {
 	//                (r ^ v) ^ r -> r
@@ -105,7 +112,7 @@ uint32_t t_set_bits(uint32_t value, uint32_t t_register, uint32_t t_mask)
 	// r = 0, v = 0 : (0 ^ 0) ^ 0  = 0   // v=0, r not changed
 	value = value & t_mask;
 	t_register = (t_register ^ value);
-	printf("value= %ld, t_register=%ld\n",value, t_register);
+	printf("value= %d, t_register=%d\n",value, t_register);
 	return t_register;
 }
 
@@ -118,7 +125,7 @@ uint32_t t_clear_bits(uint32_t value, uint32_t t_register, uint32_t t_mask)
 	// r = 0, v = 0 : (0 & ~0) ^ 0  = 0   // v=0, r cleared
 	value = value & t_mask;
 	t_register = (t_register ^ value);
-	printf("value= %ld, t_register=%ld\n",value, t_register);
+	printf("value= %d, t_register=%d\n",value, t_register);
 	return t_register;
 }
 
@@ -133,6 +140,8 @@ void test_w(void)
 
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
+		// index = 0b00000vrm -> 0b0111 -> 0x07
+		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w_mask & 0x01);
 		TEST_ASSERT_EQUAL_UINT8(w[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
@@ -169,4 +178,55 @@ void test_t(void)
 	uint32_t reg     = 0b00110011;
 	uint32_t t_mask  = 0b01010101;
 
+	uint32_t result = t_write(val, reg, t_mask);
+
+	for (size_t i = 0; i < sizeof(reg); i++)
+	{
+		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
+		TEST_ASSERT_EQUAL_UINT8(t[index], result & 0x01);
+		result >>= 1;
+		val >>= 1;
+		reg >>= 1;
+		t_mask >>= 1;
+	}
+}
+
+void test_t_set_bits(void)
+{
+	// bits of val, reg and mask here repeat values in the 'rw', 'w0' and 't' tables
+	uint32_t val     = 0b00001111;
+	uint32_t reg     = 0b00110011;
+	uint32_t t_mask  = 0b01010101;
+
+	uint32_t result = t_set_bits(val, reg, t_mask);
+
+	for (size_t i = 0; i < sizeof(reg); i++)
+	{
+		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
+		TEST_ASSERT_EQUAL_UINT8(t[index], result & 0x01);
+		result >>= 1;
+		val >>= 1;
+		reg >>= 1;
+		t_mask >>= 1;
+	}
+}
+
+void test_t_clear_bits(void)
+{
+	// bits of val, reg and mask here repeat values in the 'rw', 'w0' and 't' tables
+	uint32_t val     = 0b00001111;
+	uint32_t reg     = 0b00110011;
+	uint32_t t_mask  = 0b01010101;
+
+	uint32_t result = t_clear_bits(val, reg, t_mask);
+
+	for (size_t i = 0; i < sizeof(reg); i++)
+	{
+		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
+		TEST_ASSERT_EQUAL_UINT8(t[index], result & 0x01);
+		result >>= 1;
+		val >>= 1;
+		reg >>= 1;
+		t_mask >>= 1;
+	}
 }
