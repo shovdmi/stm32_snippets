@@ -37,21 +37,21 @@ uint8_t t[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
 // m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
-        0,  0,  1,  1,  0,  1,  1,  0,      // toggleble bits
+        0,  0,  1,  1,  0,  1,  1,  0,      // toggleable bits
 };
 
 uint8_t t_set[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
 // m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
-        0,  0,  1,  1,  0,  1,  1,  1,      // set toggleble bits
+        0,  0,  1,  1,  0,  1,  1,  1,      // set toggleable bits
 };
 
 uint8_t t_clear[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
 // m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
-        0,  0,  1,  1,  0,  0,  1,  0,      // clear toggleble bits
+        0,  0,  1,  1,  0,  0,  1,  0,      // clear toggleable bits
 };
 
 void test_tables(void)
@@ -90,10 +90,10 @@ void test_tables(void)
 					// toggle;
 					rt2 = r ^ v;
 
-					// set toggleble;
+					// set toggleable;
 					rts2 = (v == 1) ? 1 : rts2;
 
-					// clear toggleble;
+					// clear toggleable;
 					rtc2 = (v == 1) ? 0 : rtc2;
 				}
 				TEST_ASSERT_EQUAL_UINT8(w1 , w2);
