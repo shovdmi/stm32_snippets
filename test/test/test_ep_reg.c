@@ -136,23 +136,32 @@ uint32_t t_set_bits(uint32_t value, uint32_t t_register, uint32_t t_mask)
 	// r = 0, v = 1 : (0 ^ 1) ^ 0  = 1   // v=1, r set
 	// r = 1, v = 0 : (1 ^ 0) ^ 1  = 0   // v=0, r not changed
 	// r = 0, v = 0 : (0 ^ 0) ^ 0  = 0   // v=0, r not changed
+	//printf("value= 0x%08X, t_register=0x%08X\n",value, x_value);
 	value = value & t_mask;
-	t_register = (t_register ^ value);
-	printf("value= %d, t_register=%d\n",value, t_register);
-	return t_register;
+	// (reg OR val) is a required value of 'reg' after hw-XOR-ing a looked for number
+	// i.e. we need to make a preceeding XOR to get a number which will be XOR-ed with 'reg' by hardware
+	// (t_register | value) ^ t_register  ^(by hw)  t_register  == (t_register | value)
+	uint32_t x_value = (t_register | value) ^ t_register;
+	return x_value;
 }
 
 uint32_t t_clear_bits(uint32_t value, uint32_t t_register, uint32_t t_mask)
 {
-	//                (r & ~v) ^ r -> r
-	// r = 1, v = 1 : (1 & ~1) ^ 1  = 1   // v=1, r not changed
-	// r = 0, v = 1 : (0 & ~1) ^ 0  = 1   // v=1, r not changed
-	// r = 1, v = 0 : (1 & ~0) ^ 1  = 0   // v=0, r cleared
-	// r = 0, v = 0 : (0 & ~0) ^ 0  = 0   // v=0, r cleared
+	//                (r & v) ^ r -> r
+	// r = 1, v = 0 : (1 & 0) ^ 1  = 1   // v=1, r not changed
+	// r = 0, v = 0 : (0 & 0) ^ 0  = 1   // v=1, r not changed
+	// r = 1, v = 1 : (1 & 1) ^ 1  = 0   // v=0, r cleared
+	// r = 0, v = 1 : (0 & 1) ^ 0  = 0   // v=0, r cleared
+
+	// if m == 0 and either v == 0 or v == 1, we don't touch r
+	// if m == 1 and v == 1, we reset r.
+	// For example we want to reset bits using value=0b1010 and mask=0b1100. That means
+	// our masked 'value' is going to be 0b1000.
+	// For clearing a bit we use bitwise-AND between r and 1 (one) preceeding hardware bitwise-XOR,
+	// i.e (r & 1) == r ----> (this xor is made by usb-core) r ^ r = 0
 	value = value & t_mask;
-	t_register = (t_register ^ value);
-	printf("value= %d, t_register=%d\n",value, t_register);
-	return t_register;
+	uint32_t x_value = t_register & value;
+	return x_value;
 }
 
 void test_w(void)
@@ -225,11 +234,12 @@ void test_t_set_bits(void)
 	uint32_t t_mask  = 0b01010101;
 
 	uint32_t result = t_set_bits(val, reg, t_mask);
+	result = reg  ^ result;
 
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
-		TEST_ASSERT_EQUAL_UINT8(t[index], result & 0x01);
+		TEST_ASSERT_EQUAL_UINT8(t_set[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
@@ -245,11 +255,12 @@ void test_t_clear_bits(void)
 	uint32_t t_mask  = 0b01010101;
 
 	uint32_t result = t_clear_bits(val, reg, t_mask);
+	result = reg  ^ result;
 
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
-		TEST_ASSERT_EQUAL_UINT8(t[index], result & 0x01);
+		TEST_ASSERT_EQUAL_UINT8(t_clear[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
