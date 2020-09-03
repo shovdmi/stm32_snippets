@@ -234,7 +234,7 @@ void test_t_set_bits(void)
 	uint32_t t_mask  = 0b01010101;
 
 	uint32_t result = t_set_bits(val, reg, t_mask);
-	result = reg  ^ result;
+	result = reg  ^ result; // Emulating hardware-XOR-ing
 
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
@@ -255,7 +255,7 @@ void test_t_clear_bits(void)
 	uint32_t t_mask  = 0b01010101;
 
 	uint32_t result = t_clear_bits(val, reg, t_mask);
-	result = reg  ^ result;
+	result = reg  ^ result; // Emulating hardware-XOR-ing
 
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
