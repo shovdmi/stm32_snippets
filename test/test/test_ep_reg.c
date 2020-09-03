@@ -40,6 +40,20 @@ uint8_t t[8] = {
         0,  0,  1,  1,  0,  1,  1,  0,      // toggleble bits
 };
 
+uint8_t t_set[8] = {
+// v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
+// r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
+// m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
+        0,  0,  1,  1,  0,  1,  1,  1,      // set toggleble bits
+};
+
+uint8_t t_clear[8] = {
+// v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
+// r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
+// m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
+        0,  0,  1,  1,  0,  0,  1,  0,      // clear toggleble bits
+};
+
 void test_tables(void)
 {
 	// v -- bit's value to be written
@@ -56,10 +70,14 @@ void test_tables(void)
 				uint8_t w1  = w[index];
 				uint8_t w01 = w0[index];
 				uint8_t rt1 = t[index];
+				uint8_t rts1 = t_set[index];
+				uint8_t rtc1 = t_clear[index];
 				
 				uint8_t w2  = r;
 				uint8_t w02 = r;
 				uint8_t rt2 = r;
+				uint8_t rts2 = r;
+				uint8_t rtc2 = r;
 				if (m == 1) {
 					 // write
 					w2 = v;
@@ -71,10 +89,18 @@ void test_tables(void)
 					
 					// toggle;
 					rt2 = r ^ v;
+
+					// set toggleble;
+					rts2 = (v == 1) ? 1 : rts2;
+
+					// clear toggleble;
+					rtc2 = (v == 1) ? 0 : rtc2;
 				}
 				TEST_ASSERT_EQUAL_UINT8(w1 , w2);
 				TEST_ASSERT_EQUAL_UINT8(w01, w02);
 				TEST_ASSERT_EQUAL_UINT8(rt1, rt2);				
+				TEST_ASSERT_EQUAL_UINT8(rts1, rts2);				
+				TEST_ASSERT_EQUAL_UINT8(rtc1, rtc2);				
 			}
 		}
 	}
