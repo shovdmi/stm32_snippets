@@ -146,7 +146,7 @@ void test_w(void)
 	uint32_t reg    = 0b00110011;
 	uint32_t w_mask = 0b01010101;
 
-	uint32_t result = w_write(val, reg, w_mask);
+	uint32_t result = w_write_bits(val, reg, w_mask);
 
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
@@ -167,7 +167,7 @@ void test_w_set(void)
 	uint32_t reg    = 0b00110011;
 	uint32_t w_mask = 0b01010101;
 
-	uint32_t result = w_set(val, reg, w_mask);
+	uint32_t result = w_set_bits(val, reg, w_mask);
 
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
@@ -188,7 +188,7 @@ void test_w_clear(void)
 	uint32_t reg    = 0b00110011;
 	uint32_t w_mask = 0b01010101;
 
-	uint32_t result = w_clear(val, reg, w_mask);
+	uint32_t result = w_clear_bits(val, reg, w_mask);
 
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
@@ -209,7 +209,7 @@ void test_w0(void)
 	uint32_t reg     = 0b00110011;
 	uint32_t w0_mask = 0b01010101;
 
-	uint32_t result = w0_write(val, reg, w0_mask);
+	uint32_t result = w0_write_bits(val, reg, w0_mask);
 
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
@@ -230,7 +230,7 @@ void test_t(void)
 	uint32_t reg     = 0b00110011;
 	uint32_t t_mask  = 0b01010101;
 
-	uint32_t result = t_write(val, reg, t_mask);
+	uint32_t result = t_write_bits(val, reg, t_mask);
 
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{

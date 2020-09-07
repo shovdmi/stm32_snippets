@@ -3,28 +3,28 @@
 
 #include <stdint.h>
 
-static __inline__ uint32_t w_write(uint32_t value, uint32_t rw_register, uint32_t rw_mask)
+static __inline__ uint32_t w_write_bits(uint32_t value, uint32_t rw_register, uint32_t rw_mask)
 {
 	rw_register = rw_register & (~rw_mask);
 	rw_register = rw_register | (value & rw_mask);
 	return rw_register;
 }
 
-static __inline__ uint32_t w_set(uint32_t value, uint32_t rw_register, uint32_t rw_mask)
+static __inline__ uint32_t w_set_bits(uint32_t value, uint32_t rw_register, uint32_t rw_mask)
 {
 	value = value & rw_mask;
 	rw_register = rw_register | value;
 	return rw_register;
 }
 
-static __inline__ uint32_t w_clear(uint32_t value, uint32_t rw_register, uint32_t rw_mask)
+static __inline__ uint32_t w_clear_bits(uint32_t value, uint32_t rw_register, uint32_t rw_mask)
 {
 	value = value & rw_mask;
 	rw_register = rw_register & (~value);
 	return rw_register;
 }
 
-static __inline__ uint32_t w0_write(uint32_t value, uint32_t w0_register, uint32_t w0_mask)
+static __inline__ uint32_t w0_write_bits(uint32_t value, uint32_t w0_register, uint32_t w0_mask)
 {
 	value = value & w0_mask;
 	uint32_t w0_register_new = w0_register & value;
@@ -32,7 +32,7 @@ static __inline__ uint32_t w0_write(uint32_t value, uint32_t w0_register, uint32
 	return w0_register_new;
 }
 
-static __inline__ uint32_t t_write(uint32_t value, uint32_t t_register, uint32_t t_mask)
+static __inline__ uint32_t t_write_bits(uint32_t value, uint32_t t_register, uint32_t t_mask)
 {
 	value = value & t_mask;
 	uint32_t t_register_new = t_register ^ value;
