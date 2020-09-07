@@ -1,4 +1,5 @@
 #include "ep.h"
+#include "bits_operation.h"
 
 inline uint16_t ep_read_value(uint8_t ep_number)
 {
@@ -46,19 +47,19 @@ inline uint16_t ep_set_ep_address(uint16_t ep_value, uint8_t address)
 
 inline uint16_t ep_set_setup(uint16_t ep_value)
 {
-		ep_value |= USB_EP_CONTROL;
-		return ep_value
+	ep_value = set_bits(USB_EP_CONTROL, ep_value, USB_W_MASK, USB_W0_MASK, USB_T_MASK);
+	return ep_value
 }
 
 inline uint16_t ep_clear_setup(uint16_t ep_value)
 {
-		ep_value &= (uint16_t)~USB_EP_CONTROL;
-		return ep_value
+	ep_value = clear_bits(USB_EP_CONTROL, ep_value, USB_W_MASK, USB_W0_MASK, USB_T_MASK);
+	return ep_value
 }
 
 inline uint16_t ep_get_setup(uint16_t ep_value)
 {
-		return !!(ep_value & USB_EP_CONTROL);
+	return !!(ep_value & USB_EP_CONTROL);
 }
 
 inline uint16_t ep_set_direction(uint16_t ep_value, enum ep_direction_t direction)

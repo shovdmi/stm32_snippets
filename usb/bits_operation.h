@@ -74,5 +74,25 @@ static __inline__ uint32_t t_clear_bits(uint32_t value, uint32_t t_register, uin
 	return x_value;
 }
 
+static __inline__ uint32_t set_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
+{
+	uint32_t w_value = value & w_mask;
+	uint32_t t_value = value & t_mask;
+	
+	w_set_bits(w_value, reg, w_mask);
+	t_set_bits(t_value, reg, w_mask);
+}
+
+static __inline__ uint32_t clear_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
+{
+	uint32_t w_value = value & w_mask;
+	uint32_t w0_value = value & w0_mask;
+	uint32_t t_value = value & t_mask;
+	
+	w_clear_bits(w_value, reg, w_mask);
+	w_clear_bits(w0_value, reg, w0_mask);
+	t_clear_bits(t_value, reg, w_mask);
+}
+
 
 #endif
