@@ -284,3 +284,65 @@ void test_t_clear_bits(void)
 		t_mask >>= 1;
 	}
 }
+
+void test_set_bits(void)
+{
+	// bits of val, reg and mask here repeat values in the 'rw', 'w0' and 't' tables
+	uint32_t val     = 0b00001111;
+	uint32_t reg     = 0b00110011;
+	uint32_t mask    = 0b01010101;
+
+	uint32_t w_val = val;
+	uint32_t w_reg = reg;
+	uint32_t w_mask = mask;
+
+	uint32_t w0_val = val << 8;
+	uint32_t w0_reg = reg << 8;
+	uint32_t w0_mask = mask << 8;
+
+	uint32_t t_val = val << 16;
+	uint32_t t_reg = reg << 16;
+	uint32_t t_mask = mask << 16;
+
+	uint32_t g_val =  t_val | w0_val | w_val;
+	uint32_t g_reg =  t_reg | w0_reg | w_reg;
+	uint32_t g_mask =  t_mask | w0_mask | w_mask;
+
+	uint32_t result = set_bits(g_val, g_reg, w_mask, w0_mask, t_mask);
+	printf("result=%X\n", result);
+
+
+	for (size_t i = 0; i < 8; i++)
+	{
+		printf("i=%ld\n", i);
+		size_t index = ((g_val & 0x01) << 2) | ((g_reg & 0x01) << 1) | (g_mask & 0x01); // <-- *_mask
+		TEST_ASSERT_EQUAL_UINT8(w_set_tbl[index], result & 0x01); // <-- *_set/clear/toggle
+		result >>= 1;
+		g_val >>= 1;
+		g_reg >>= 1;
+		g_mask >>= 1; // <-- *_mask
+	}
+
+	w0_mask = mask;
+	for (size_t i = 0; i < 8; i++)
+	{
+		size_t index = ((g_val & 0x01) << 2) | ((g_reg & 0x01) << 1) | (g_mask & 0x01); // <-- *_mask
+		TEST_ASSERT_EQUAL_UINT8((w0_reg >> i) & 0x01, result & 0x01); // <-- Here is w0_reg (initial value), as w0 cannot be set
+		result >>= 1;
+		g_val >>= 1;
+		g_reg >>= 1;
+		g_mask >>= 1; // <-- *_mask
+	}
+
+	t_mask = mask;
+	result = result ^ t_reg; // FIXME: We need a number which will be written to toggleable register
+	for (size_t i = 0; i < 8; i++)
+	{
+		size_t index = ((g_val & 0x01) << 2) | ((g_reg & 0x01) << 1) | (g_mask & 0x01); // <-- *_mask
+		TEST_ASSERT_EQUAL_UINT8(t_set_tbl[index], result & 0x01); // <-- *_set/clear/toggle
+		result >>= 1;
+		g_val >>= 1;
+		g_reg >>= 1;
+		g_mask >>= 1; // <-- *_mask
+	}
+}

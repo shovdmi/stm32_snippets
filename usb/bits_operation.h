@@ -76,11 +76,19 @@ static __inline__ uint32_t t_clear_bits(uint32_t value, uint32_t t_register, uin
 
 static __inline__ uint32_t set_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
 {
+	printf("value=  0x%08X,\nreg=    0x%08X,\nw_mask= 0x%08X,\nw0_mask=0x%08X,\nt_mask= 0x%08X\n", value, reg,
+	w_mask, w0_mask, t_mask);
+
 	uint32_t w_value = value & w_mask;
 	uint32_t t_value = value & t_mask;
+
+	uint32_t new_register = reg;
 	
-	w_set_bits(w_value, reg, w_mask);
-	t_set_bits(t_value, reg, w_mask);
+	new_register = w_set_bits(w_value, new_register, w_mask);
+	printf("new_reg=0x%08X (1)\n", new_register);
+	new_register = t_set_bits(t_value, new_register, t_mask);
+	printf("new_reg=0x%08X (2)\n", new_register);
+	return new_register;
 }
 
 static __inline__ uint32_t clear_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
@@ -88,10 +96,13 @@ static __inline__ uint32_t clear_bits(uint32_t value, uint32_t reg, uint32_t w_m
 	uint32_t w_value = value & w_mask;
 	uint32_t w0_value = value & w0_mask;
 	uint32_t t_value = value & t_mask;
+
+	uint32_t new_register = reg;
 	
-	w_clear_bits(w_value, reg, w_mask);
-	w_clear_bits(w0_value, reg, w0_mask);
-	t_clear_bits(t_value, reg, w_mask);
+	new_register = w_clear_bits(w_value, new_register, w_mask);
+	new_register = w_clear_bits(w0_value, new_register, w0_mask);
+	new_register = t_clear_bits(t_value, new_register, t_mask);
+	return new_register;
 }
 
 
