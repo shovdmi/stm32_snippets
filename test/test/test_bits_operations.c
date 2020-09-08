@@ -20,7 +20,7 @@ void tearDown(void)
 }
 
 
-uint8_t w[8] = {
+uint8_t w_tbl[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |    (value to be written)
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |    (register value)
 // m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |    (mask)
@@ -41,7 +41,7 @@ uint8_t w_clear_tbl[8] = {
         0,  0,  1,  1,  0,  0,  1,  0,      // normal-write bits
 };
 
-uint8_t w0[8] = {
+uint8_t w0_tbl[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
 // m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
@@ -49,21 +49,21 @@ uint8_t w0[8] = {
 };
 
 
-uint8_t t[8] = {
+uint8_t t_tbl[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
 // m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
         0,  0,  1,  1,  0,  1,  1,  0,      // toggleable bits
 };
 
-uint8_t t_set[8] = {
+uint8_t t_set_tbl[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
 // m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
         0,  0,  1,  1,  0,  1,  1,  1,      // set toggleable bits
 };
 
-uint8_t t_clear[8] = {
+uint8_t t_clear_tbl[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
 // m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
@@ -83,13 +83,13 @@ void test_tables(void)
 			{
 				uint8_t index = (v<<2) | (r<<1) | (m);
 				
-				uint8_t w1  = w[index];
+				uint8_t w1  = w_tbl[index];
 				uint8_t w_set1= w_set_tbl[index];
 				uint8_t w_clear1= w_clear_tbl[index];
-				uint8_t w01 = w0[index];
-				uint8_t rt1 = t[index];
-				uint8_t rts1 = t_set[index];
-				uint8_t rtc1 = t_clear[index];
+				uint8_t w01 = w0_tbl[index];
+				uint8_t rt1 = t_tbl[index];
+				uint8_t rts1 = t_set_tbl[index];
+				uint8_t rtc1 = t_clear_tbl[index];
 				
 				uint8_t w2  = r;
 				uint8_t w_set2= r;
@@ -152,7 +152,7 @@ void test_w(void)
 	{
 		// index = 0b00000vrm -> 0b0111 -> 0x07
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w_mask & 0x01);
-		TEST_ASSERT_EQUAL_UINT8(w[index], result & 0x01);
+		TEST_ASSERT_EQUAL_UINT8(w_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
@@ -214,7 +214,7 @@ void test_w0(void)
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w0_mask & 0x01);
-		TEST_ASSERT_EQUAL_UINT8(w0[index], result & 0x01);
+		TEST_ASSERT_EQUAL_UINT8(w0_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
@@ -235,7 +235,7 @@ void test_t(void)
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
-		TEST_ASSERT_EQUAL_UINT8(t[index], result & 0x01);
+		TEST_ASSERT_EQUAL_UINT8(t_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
@@ -256,7 +256,7 @@ void test_t_set_bits(void)
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
-		TEST_ASSERT_EQUAL_UINT8(t_set[index], result & 0x01);
+		TEST_ASSERT_EQUAL_UINT8(t_set_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
@@ -277,7 +277,7 @@ void test_t_clear_bits(void)
 	for (size_t i = 0; i < sizeof(reg); i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
-		TEST_ASSERT_EQUAL_UINT8(t_clear[index], result & 0x01);
+		TEST_ASSERT_EQUAL_UINT8(t_clear_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
