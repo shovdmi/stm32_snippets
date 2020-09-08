@@ -148,7 +148,7 @@ void test_w(void)
 
 	uint32_t result = w_write_bits(val, reg, w_mask);
 
-	for (size_t i = 0; i < sizeof(reg); i++)
+	for (size_t i = 0; i < 8; i++)
 	{
 		// index = 0b00000vrm -> 0b0111 -> 0x07
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w_mask & 0x01);
@@ -169,7 +169,7 @@ void test_w_set(void)
 
 	uint32_t result = w_set_bits(val, reg, w_mask);
 
-	for (size_t i = 0; i < sizeof(reg); i++)
+	for (size_t i = 0; i < 8; i++)
 	{
 		// index = 0b00000vrm -> 0b0111 -> 0x07
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w_mask & 0x01);
@@ -190,7 +190,7 @@ void test_w_clear(void)
 
 	uint32_t result = w_clear_bits(val, reg, w_mask);
 
-	for (size_t i = 0; i < sizeof(reg); i++)
+	for (size_t i = 0; i < 8; i++)
 	{
 		// index = 0b00000vrm -> 0b0111 -> 0x07
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w_mask & 0x01);
@@ -211,7 +211,7 @@ void test_w0(void)
 
 	uint32_t result = w0_write_bits(val, reg, w0_mask);
 
-	for (size_t i = 0; i < sizeof(reg); i++)
+	for (size_t i = 0; i < 8; i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w0_mask & 0x01);
 		TEST_ASSERT_EQUAL_UINT8(w0_tbl[index], result & 0x01);
@@ -232,7 +232,7 @@ void test_t(void)
 
 	uint32_t result = t_write_bits(val, reg, t_mask);
 
-	for (size_t i = 0; i < sizeof(reg); i++)
+	for (size_t i = 0; i < 8; i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
 		TEST_ASSERT_EQUAL_UINT8(t_tbl[index], result & 0x01);
@@ -253,7 +253,7 @@ void test_t_set_bits(void)
 	uint32_t result = t_set_bits(val, reg, t_mask);
 	result = reg  ^ result; // Emulating hardware-XOR-ing
 
-	for (size_t i = 0; i < sizeof(reg); i++)
+	for (size_t i = 0; i < 8; i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
 		TEST_ASSERT_EQUAL_UINT8(t_set_tbl[index], result & 0x01);
@@ -274,7 +274,7 @@ void test_t_clear_bits(void)
 	uint32_t result = t_clear_bits(val, reg, t_mask);
 	result = reg  ^ result; // Emulating hardware-XOR-ing
 
-	for (size_t i = 0; i < sizeof(reg); i++)
+	for (size_t i = 0; i < 8; i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
 		TEST_ASSERT_EQUAL_UINT8(t_clear_tbl[index], result & 0x01);
