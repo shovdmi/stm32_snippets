@@ -51,7 +51,9 @@ static __inline__ uint32_t t_set_bits(uint32_t value, uint32_t t_register, uint3
 	// (reg OR val) is a required value of 'reg' after hw-XOR-ing a looked for number
 	// i.e. we need to make a preceeding XOR to get a number which will be XOR-ed with 'reg' by hardware
 	// (t_register | value) ^ t_register  ^(by hw)  t_register  == (t_register | value)
-	uint32_t x_value = (t_register | value) ^ t_register;
+	uint32_t x_value = (t_register | value) ^ (t_register & t_mask);
+	printf("t_register | value =0x%08X, t_register & t_mask = 0x%08X, x_value = 0x%08X", (t_register | value),\
+(t_register & t_mask), x_value);
 	return x_value;
 }
 
@@ -76,32 +78,33 @@ static __inline__ uint32_t t_clear_bits(uint32_t value, uint32_t t_register, uin
 
 static __inline__ uint32_t set_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
 {
-	printf("value=  0x%08X,\nreg=    0x%08X,\nw_mask= 0x%08X,\nw0_mask=0x%08X,\nt_mask= 0x%08X\n", value, reg,
-	w_mask, w0_mask, t_mask);
-
 	uint32_t w_value = value & w_mask;
 	uint32_t t_value = value & t_mask;
 
-	uint32_t new_register = reg;
-	
-	new_register = w_set_bits(w_value, new_register, w_mask);
-	printf("new_reg=0x%08X (1)\n", new_register);
-	new_register = t_set_bits(t_value, new_register, t_mask);
-	printf("new_reg=0x%08X (2)\n", new_register);
-	return new_register;
+	uint32_t new_register = w_set_bits(w_value, reg, w_mask);
+	uint32_t t_new_register = t_set_bits(t_value, new_register, t_mask);
+	return new_register | t_new_register;
 }
 
 static __inline__ uint32_t clear_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
 {
+	printf("value=  0x%08X,\nreg=    0x%08X,\nw_mask= 0x%08X,\nw0_mask=0x%08X,\nt_mask= 0x%08X\n", value, reg,
+	w_mask, w0_mask, t_mask);
+
 	uint32_t w_value = value & w_mask;
 	uint32_t w0_value = value & w0_mask;
 	uint32_t t_value = value & t_mask;
 
-	uint32_t new_register = reg;
-	
-	new_register = w_clear_bits(w_value, new_register, w_mask);
+	uint32_t new_register = w_clear_bits(w_value, reg, w_mask);
+
 	new_register = w_clear_bits(w0_value, new_register, w0_mask);
-	new_register = t_clear_bits(t_value, new_register, t_mask);
+	printf("new_reg=0x%08X (1)\n", new_register);
+
+	uint32_t t_new_register = t_clear_bits(t_value, new_register, t_mask);
+	printf("t_reg  =0x%08X (t)\n", t_new_register);
+  new_register = new_register & (~t_mask);
+	printf("new_reg=0x%08X (~)\n", new_register);
+	printf("new_reg=0x%08X (2)\n", new_register | t_new_register);
 	return new_register;
 }
 

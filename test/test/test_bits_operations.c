@@ -249,9 +249,14 @@ void test_t_set_bits(void)
 	uint32_t val     = 0b00001111;
 	uint32_t reg     = 0b00110011;
 	uint32_t t_mask  = 0b01010101;
-
+//     final value = 0br0r1r1r1   r-keep register bit where m==0
+//     final value = 0b00110111   == 0x37
+// to be written   = 0b00100110   == 0x26
 	uint32_t result = t_set_bits(val, reg, t_mask);
-	result = reg  ^ result; // Emulating hardware-XOR-ing
+
+	// Should work both way
+	//result = reg  ^ (result & t_mask); // Emulating hardware-XOR-ing
+	result = (reg & t_mask) ^ result; // Emulating hardware-XOR-ing
 
 	for (size_t i = 0; i < 8; i++)
 	{
@@ -304,45 +309,57 @@ void test_set_bits(void)
 	uint32_t t_reg = reg << 16;
 	uint32_t t_mask = mask << 16;
 
-	uint32_t g_val =  t_val | w0_val | w_val;
-	uint32_t g_reg =  t_reg | w0_reg | w_reg;
-	uint32_t g_mask =  t_mask | w0_mask | w_mask;
+	// part of the 32bit number which must be keep
+	uint32_t k_val = val << 24;
+	uint32_t k_reg = reg << 24;
+	uint32_t k_mask = 0;
 
+	uint32_t g_val =  t_val            | w_val  | k_val; // we omit w0_val here because we cannot set write-zero bits
+	uint32_t g_reg =  t_reg  | w0_reg  | w_reg  | k_reg;
+	uint32_t g_mask = t_mask | w0_mask | w_mask | k_mask;
+
+	uint32_t expected = (g_val & g_mask) | g_reg;
 	uint32_t result = set_bits(g_val, g_reg, w_mask, w0_mask, t_mask);
-	printf("result=%X\n", result);
+	result = result ^ (g_reg & t_mask);
+	TEST_ASSERT_EQUAL_UINT32(expected, result);
+}
 
 
-	for (size_t i = 0; i < 8; i++)
-	{
-		printf("i=%ld\n", i);
-		size_t index = ((g_val & 0x01) << 2) | ((g_reg & 0x01) << 1) | (g_mask & 0x01); // <-- *_mask
-		TEST_ASSERT_EQUAL_UINT8(w_set_tbl[index], result & 0x01); // <-- *_set/clear/toggle
-		result >>= 1;
-		g_val >>= 1;
-		g_reg >>= 1;
-		g_mask >>= 1; // <-- *_mask
-	}
+void test_clear_bits(void)
+{
+	// bits of val, reg and mask here repeat values in the 'rw', 'w0' and 't' tables
+	uint32_t val     = 0b00001111;
+	uint32_t reg     = 0b00110011;
+	uint32_t mask    = 0b01010101;
 
-	w0_mask = mask;
-	for (size_t i = 0; i < 8; i++)
-	{
-		size_t index = ((g_val & 0x01) << 2) | ((g_reg & 0x01) << 1) | (g_mask & 0x01); // <-- *_mask
-		TEST_ASSERT_EQUAL_UINT8((w0_reg >> i) & 0x01, result & 0x01); // <-- Here is w0_reg (initial value), as w0 cannot be set
-		result >>= 1;
-		g_val >>= 1;
-		g_reg >>= 1;
-		g_mask >>= 1; // <-- *_mask
-	}
+	uint32_t w_val = val;
+	uint32_t w_reg = reg;
+	uint32_t w_mask = mask;
 
-	t_mask = mask;
-	result = result ^ t_reg; // FIXME: We need a number which will be written to toggleable register
-	for (size_t i = 0; i < 8; i++)
-	{
-		size_t index = ((g_val & 0x01) << 2) | ((g_reg & 0x01) << 1) | (g_mask & 0x01); // <-- *_mask
-		TEST_ASSERT_EQUAL_UINT8(t_set_tbl[index], result & 0x01); // <-- *_set/clear/toggle
-		result >>= 1;
-		g_val >>= 1;
-		g_reg >>= 1;
-		g_mask >>= 1; // <-- *_mask
-	}
+	uint32_t w0_val = val << 8;
+	uint32_t w0_reg = reg << 8;
+	uint32_t w0_mask = mask << 8;
+
+	uint32_t t_val = val << 16;
+	uint32_t t_reg = reg << 16;
+	uint32_t t_mask = mask << 16;
+
+	// part of the 32bit number which must be keep
+	uint32_t k_val = val << 24;
+	uint32_t k_reg = reg << 24;
+	uint32_t k_mask = 0;
+
+	uint32_t g_val =  t_val | w0_val | w_val | k_val;
+	uint32_t g_reg =  t_reg | w0_reg | w_reg | k_reg;
+	uint32_t g_mask = t_mask| w0_mask| w_mask| k_mask;
+
+	uint32_t expected = (~(g_val & g_mask)) & g_reg;
+	printf("g_reg =  0x%08X \nexpected mask =0x%08X\n", g_reg, ~(g_val & g_mask));
+	printf("expected reg  =0x%08X\n", expected);
+	printf("t_expected reg=0x%08X\n", expected ^ t_mask);
+	uint32_t result = clear_bits(g_val, g_reg, w_mask, w0_mask, t_mask);
+	printf("result        =0x%08X\n", result);
+	result = result ^ (g_reg & t_mask);
+	printf("t_result      =0x%08X\n", result);
+	TEST_ASSERT_EQUAL_UINT32(expected, result);
 }
