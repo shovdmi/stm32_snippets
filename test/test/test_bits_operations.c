@@ -275,6 +275,9 @@ void test_t_clear_bits(void)
 	uint32_t val     = 0b00001111;
 	uint32_t reg     = 0b00110011;
 	uint32_t t_mask  = 0b01010101;
+//     final value = 0br0r1r0r0   r-keep register bit where m==0
+//     final value = 0b00110111   == 0x37
+// to be written   = 0b00100110   == 0x26
 
 	uint32_t result = t_clear_bits(val, reg, t_mask);
 	result = reg  ^ result; // Emulating hardware-XOR-ing
