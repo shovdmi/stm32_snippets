@@ -52,7 +52,7 @@ static __inline__ uint32_t t_set_bits(uint32_t value, uint32_t t_register, uint3
 	// i.e. we need to make a preceeding XOR to get a number which will be XOR-ed with 'reg' by hardware
 	// (t_register | value) ^ t_register  ^(by hw)  t_register  == (t_register | value)
 	uint32_t x_value = (t_register | value) ^ (t_register & t_mask);
-	printf("t_register | value =0x%08X, t_register & t_mask = 0x%08X, x_value = 0x%08X", (t_register | value),\
+	//printf("t_register | value =0x%08X, t_register & t_mask = 0x%08X, x_value = 0x%08X\n", (t_register | value),\
 (t_register & t_mask), x_value);
 	return x_value;
 }
@@ -82,8 +82,12 @@ static __inline__ uint32_t set_bits(uint32_t value, uint32_t reg, uint32_t w_mas
 	uint32_t t_value = value & t_mask;
 
 	uint32_t new_register = w_set_bits(w_value, reg, w_mask);
-	uint32_t t_new_register = t_set_bits(t_value, new_register, t_mask);
-	return new_register | t_new_register;
+	//printf("new_reg =0x%08X\n", new_register);
+
+	uint32_t x_value = t_set_bits(t_value, new_register, t_mask);
+	//printf("t_new_reg=0x%08X\n", t_new_register);
+
+	return x_value;
 }
 
 static __inline__ uint32_t clear_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
