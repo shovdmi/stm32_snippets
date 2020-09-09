@@ -72,7 +72,7 @@ static __inline__ uint32_t t_clear_bits(uint32_t value, uint32_t t_register, uin
 	// For clearing a bit we use bitwise-AND between r and 1 (one) preceeding hardware bitwise-XOR,
 	// i.e (r & 1) == r ----> (this xor is made by usb-core) r ^ r = 0
 	value = value & t_mask;
-	uint32_t x_value = t_register & value;
+	uint32_t x_value = (t_register & value) | (t_register & ~t_mask);
 	return x_value;
 }
 
@@ -85,31 +85,23 @@ static __inline__ uint32_t set_bits(uint32_t value, uint32_t reg, uint32_t w_mas
 	//printf("new_reg =0x%08X\n", new_register);
 
 	uint32_t x_value = t_set_bits(t_value, new_register, t_mask);
-	//printf("t_new_reg=0x%08X\n", t_new_register);
+	//printf("t_new_reg=0x%08X\n", x_value);
 
 	return x_value;
 }
 
 static __inline__ uint32_t clear_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
 {
-	printf("value=  0x%08X,\nreg=    0x%08X,\nw_mask= 0x%08X,\nw0_mask=0x%08X,\nt_mask= 0x%08X\n", value, reg,
-	w_mask, w0_mask, t_mask);
-
-	uint32_t w_value = value & w_mask;
-	uint32_t w0_value = value & w0_mask;
+	uint32_t w_value = value & (w_mask | w0_mask);
 	uint32_t t_value = value & t_mask;
 
-	uint32_t new_register = w_clear_bits(w_value, reg, w_mask);
+	uint32_t new_register = w_clear_bits(w_value, reg, (w_mask | w0_mask));
+	printf("new_reg =0x%08X\n", new_register);
 
-	new_register = w_clear_bits(w0_value, new_register, w0_mask);
-	printf("new_reg=0x%08X (1)\n", new_register);
+	uint32_t x_value = t_clear_bits(t_value, new_register, t_mask);
+	printf("t_new_reg=0x%08X\n", x_value);
 
-	uint32_t t_new_register = t_clear_bits(t_value, new_register, t_mask);
-	printf("t_reg  =0x%08X (t)\n", t_new_register);
-  new_register = new_register & (~t_mask);
-	printf("new_reg=0x%08X (~)\n", new_register);
-	printf("new_reg=0x%08X (2)\n", new_register | t_new_register);
-	return new_register;
+	return x_value;
 }
 
 

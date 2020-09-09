@@ -280,7 +280,7 @@ void test_t_clear_bits(void)
 // to be written   = 0b00100110   == 0x26
 
 	uint32_t result = t_clear_bits(val, reg, t_mask);
-	result = reg  ^ result; // Emulating hardware-XOR-ing
+	result = (reg & t_mask)  ^ result; // Emulating hardware-XOR-ing
 
 	for (size_t i = 0; i < 8; i++)
 	{
@@ -343,7 +343,7 @@ void test_set_bits(void)
 }
 
 
-void a_test_clear_bits(void)
+void test_clear_bits(void)
 {
 	// bits of val, reg and mask here repeat values in the 'rw', 'w0' and 't' tables
 	uint32_t val     = 0b00001111;
