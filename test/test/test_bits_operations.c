@@ -372,12 +372,12 @@ void test_clear_bits(void)
 	uint32_t g_mask = t_mask| w0_mask| w_mask| k_mask;
 
 	uint32_t expected = (~(g_val & g_mask)) & g_reg;
-	printf("g_reg =  0x%08X \nexpected mask =0x%08X\n", g_reg, ~(g_val & g_mask));
-	printf("expected reg  =0x%08X\n", expected);
-	printf("t_expected reg=0x%08X\n", expected ^ t_mask);
+	//printf("g_reg =  0x%08X \nexpected mask =0x%08X\n", g_reg, ~(g_val & g_mask));
+	//printf("expected reg  =0x%08X\n", expected);
+	//printf("t_expected reg=0x%08X\n", expected ^ t_mask);
 	uint32_t result = clear_bits(g_val, g_reg, w_mask, w0_mask, t_mask);
-	printf("result        =0x%08X\n", result);
+	//printf("result        =0x%08X\n", result);
 	result = result ^ (g_reg & t_mask);
-	printf("t_result      =0x%08X\n", result);
+	//printf("t_result      =0x%08X\n", result);
 	TEST_ASSERT_EQUAL_HEX32(expected, result);
 }
