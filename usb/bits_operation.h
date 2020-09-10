@@ -118,5 +118,19 @@ static __inline__ uint32_t clear_bits(uint32_t value, uint32_t reg, uint32_t w_m
 	return x_value;
 }
 
+static __inline__ uint32_t toggle_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
+{
+	uint32_t w_value = value & (w_mask | w0_mask);
+	uint32_t t_value = value & t_mask;
+
+	uint32_t new_register = w_toggle_bits(w_value, reg, (w_mask | w0_mask));
+	//printf("new_reg =0x%08X\n", new_register);
+
+	uint32_t x_value = t_toggle_bits(t_value, new_register, t_mask);
+	//printf("t_new_reg=0x%08X\n", x_value);
+
+	return x_value;
+}
+
 
 #endif
