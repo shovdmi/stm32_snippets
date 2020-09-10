@@ -19,26 +19,25 @@ void tearDown(void)
 {
 }
 
-
-uint8_t w_tbl[8] = {
-// v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |    (value to be written)
-// r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |    (register value)
-// m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |    (mask)
-        0,  0,  1,  0,  0,  1,  1,  1,      // normal-write bits
-};
-
-uint8_t w_set_tbl[8] = {
+uint8_t set_tbl[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |    (value to be written)
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |    (register value)
 // m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |    (mask)
         0,  0,  1,  1,  0,  1,  1,  1,      // normal-write bits
 };
 
-uint8_t w_clear_tbl[8] = {
+uint8_t clear_tbl[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |    (value to be written)
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |    (register value)
 // m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |    (mask)
         0,  0,  1,  1,  0,  0,  1,  0,      // normal-write bits
+};
+
+uint8_t w_tbl[8] = {
+// v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |    (value to be written)
+// r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |    (register value)
+// m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |    (mask)
+        0,  0,  1,  0,  0,  1,  1,  1,      // normal-write bits
 };
 
 uint8_t w0_tbl[8] = {
@@ -56,19 +55,6 @@ uint8_t t_tbl[8] = {
         0,  0,  1,  1,  0,  1,  1,  0,      // toggleable bits
 };
 
-uint8_t t_set_tbl[8] = {
-// v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
-// r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
-// m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
-        0,  0,  1,  1,  0,  1,  1,  1,      // set toggleable bits
-};
-
-uint8_t t_clear_tbl[8] = {
-// v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |
-// r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |
-// m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |
-        0,  0,  1,  1,  0,  0,  1,  0,      // clear toggleable bits
-};
 
 void test_tables(void)
 {
@@ -84,12 +70,12 @@ void test_tables(void)
 				uint8_t index = (v<<2) | (r<<1) | (m);
 				
 				uint8_t w1  = w_tbl[index];
-				uint8_t w_set1= w_set_tbl[index];
-				uint8_t w_clear1= w_clear_tbl[index];
+				uint8_t w_set1= set_tbl[index];
+				uint8_t w_clear1= clear_tbl[index];
 				uint8_t w01 = w0_tbl[index];
 				uint8_t rt1 = t_tbl[index];
-				uint8_t rts1 = t_set_tbl[index];
-				uint8_t rtc1 = t_clear_tbl[index];
+				uint8_t rts1 = set_tbl[index];
+				uint8_t rtc1 = clear_tbl[index];
 				
 				uint8_t w2  = r;
 				uint8_t w_set2= r;
@@ -117,7 +103,7 @@ void test_tables(void)
 						w02 = 0;
 					}
 					
-					// toggle;
+					// write toggleable;
 					rt2 = r ^ v;
 
 					// set toggleable;
@@ -173,7 +159,7 @@ void test_w_set(void)
 	{
 		// index = 0b00000vrm -> 0b0111 -> 0x07
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w_mask & 0x01);
-		TEST_ASSERT_EQUAL_HEX8(w_set_tbl[index], result & 0x01);
+		TEST_ASSERT_EQUAL_HEX8(set_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
@@ -194,7 +180,7 @@ void test_w_clear(void)
 	{
 		// index = 0b00000vrm -> 0b0111 -> 0x07
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w_mask & 0x01);
-		TEST_ASSERT_EQUAL_HEX8(w_clear_tbl[index], result & 0x01);
+		TEST_ASSERT_EQUAL_HEX8(clear_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
@@ -261,7 +247,7 @@ void test_t_set_bits(void)
 	for (size_t i = 0; i < 8; i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
-		TEST_ASSERT_EQUAL_HEX8(t_set_tbl[index], result & 0x01);
+		TEST_ASSERT_EQUAL_HEX8(set_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
@@ -285,7 +271,7 @@ void test_t_clear_bits(void)
 	for (size_t i = 0; i < 8; i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
-		TEST_ASSERT_EQUAL_HEX8(t_clear_tbl[index], result & 0x01);
+		TEST_ASSERT_EQUAL_HEX8(clear_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
