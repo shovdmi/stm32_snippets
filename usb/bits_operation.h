@@ -24,6 +24,13 @@ static __inline__ uint32_t w_clear_bits(uint32_t value, uint32_t rw_register, ui
 	return rw_register;
 }
 
+static __inline__ uint32_t w_toggle_bits(uint32_t value, uint32_t rw_register, uint32_t rw_mask)
+{
+	value = value & rw_mask;
+	rw_register = rw_register ^ value;
+	return rw_register;
+}
+
 static __inline__ uint32_t w0_write_bits(uint32_t value, uint32_t w0_register, uint32_t w0_mask)
 {
 	value = value & w0_mask;
@@ -73,6 +80,13 @@ static __inline__ uint32_t t_clear_bits(uint32_t value, uint32_t t_register, uin
 	// i.e (r & 1) == r ----> (this xor is made by usb-core) r ^ r = 0
 	value = value & t_mask;
 	uint32_t x_value = (t_register & value) | (t_register & ~t_mask);
+	return x_value;
+}
+
+static __inline__ uint32_t t_toggle_bits(uint32_t value, uint32_t t_register, uint32_t t_mask)
+{
+	value = value & t_mask;
+	uint32_t x_value = (t_register &(~t_mask)) | value;
 	return x_value;
 }
 

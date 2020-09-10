@@ -33,6 +33,14 @@ uint8_t clear_tbl[8] = {
         0,  0,  1,  1,  0,  0,  1,  0,      // normal-write bits
 };
 
+uint8_t toggle_tbl[8] = {
+// v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |    (value to be written)
+// r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |    (register value)
+// m |  0 | 1 | 0 | 1 | 0 | 1 | 0 | 1  |    (mask)
+        0,  0,  1,  1,  0,  1,  1,  0,      // toggled bits
+};
+
+
 uint8_t w_tbl[8] = {
 // v |  0 | 0 | 0 | 0 | 1 | 1 | 1 | 1  |    (value to be written)
 // r |  0 | 0 | 1 | 1 | 0 | 0 | 1 | 1  |    (register value)
@@ -76,6 +84,7 @@ void test_tables(void)
 				uint8_t rt1 = t_tbl[index];
 				uint8_t rts1 = set_tbl[index];
 				uint8_t rtc1 = clear_tbl[index];
+				uint8_t w_toggle1= toggle_tbl[index];
 				
 				uint8_t w2  = r;
 				uint8_t w_set2= r;
@@ -84,6 +93,7 @@ void test_tables(void)
 				uint8_t rt2 = r;
 				uint8_t rts2 = r;
 				uint8_t rtc2 = r;
+				uint8_t w_toggle2 = r;
 				if (m == 1) {
 					 // write writable
 					w2 = v;
@@ -111,6 +121,11 @@ void test_tables(void)
 
 					// clear toggleable;
 					rtc2 = (v == 1) ? 0 : rtc2;
+
+          // toggle
+					if (v==1) {
+             w_toggle2 = (r == 1) ? 0 : 1;
+          }
 				}
 				TEST_ASSERT_EQUAL_HEX8(w1 , w2);
 				TEST_ASSERT_EQUAL_HEX8(w_set1 , w_set2);
@@ -119,6 +134,7 @@ void test_tables(void)
 				TEST_ASSERT_EQUAL_HEX8(rt1, rt2);				
 				TEST_ASSERT_EQUAL_HEX8(rts1, rts2);				
 				TEST_ASSERT_EQUAL_HEX8(rtc1, rtc2);				
+				TEST_ASSERT_EQUAL_HEX8(w_toggle1, w_toggle2);
 			}
 		}
 	}
@@ -181,6 +197,27 @@ void test_w_clear(void)
 		// index = 0b00000vrm -> 0b0111 -> 0x07
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w_mask & 0x01);
 		TEST_ASSERT_EQUAL_HEX8(clear_tbl[index], result & 0x01);
+		result >>= 1;
+		val >>= 1;
+		reg >>= 1;
+		w_mask >>= 1;
+	}
+}
+
+void test_w_toggle(void)
+{
+	// bits of val, reg and mask here repeat values in the 'rw', 'w0' and 't' tables
+	uint32_t val    = 0b00001111;
+	uint32_t reg    = 0b00110011;
+	uint32_t w_mask = 0b01010101;
+
+	uint32_t result = w_toggle_bits(val, reg, w_mask);
+
+	for (size_t i = 0; i < 8; i++)
+	{
+		// index = 0b00000vrm -> 0b0111 -> 0x07
+		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w_mask & 0x01);
+		TEST_ASSERT_EQUAL_HEX8(toggle_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
@@ -272,6 +309,31 @@ void test_t_clear_bits(void)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
 		TEST_ASSERT_EQUAL_HEX8(clear_tbl[index], result & 0x01);
+		result >>= 1;
+		val >>= 1;
+		reg >>= 1;
+		t_mask >>= 1;
+	}
+}
+
+void test_t_toggle_bits(void)
+{
+	// bits of val, reg and mask here repeat values in the 'rw', 'w0' and 't' tables
+	uint32_t val     = 0b00001111;
+	uint32_t reg     = 0b00110011;
+	uint32_t t_mask  = 0b01010101;
+//     final value = 0br0r1r1r0   r-keep register bit where m==0
+//     final value = 0b00110110   == 0x36
+// to be xor-ed    = 0b00000101   == 0x05
+// to be written   = 0b00100111   == 0x27
+
+	uint32_t result = t_toggle_bits(val, reg, t_mask);
+	result = (reg & t_mask)  ^ result; // Emulating hardware-XOR-ing
+
+	for (size_t i = 0; i < 8; i++)
+	{
+		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
+		TEST_ASSERT_EQUAL_HEX8(toggle_tbl[index], result & 0x01);
 		result >>= 1;
 		val >>= 1;
 		reg >>= 1;
