@@ -36,12 +36,13 @@ inline void ep_set_value(uint8_t ep_number, uint16_t value)
 #endif
 
 
-// here we assume that user calls using the value of Endpoint register as a parameter
+// here we assume that one calls functions below using the value of Endpoint register as a parameter
 // i.e. : ep_value = *(EP[ep_num].EPnR);
 inline uint16_t ep_set_ep_address(uint16_t ep_value, uint8_t address)
 {
 	assert((address & 0x0F) == address);
-	ep_value |= address;
+
+	ep_value = write_bits(address, ep_value, USB_W_MASK, USB_W0_MASK, USB_T_MASK);
 	return ep_value;
 }
 
