@@ -132,5 +132,19 @@ static __inline__ uint32_t toggle_bits(uint32_t value, uint32_t reg, uint32_t w_
 	return x_value;
 }
 
+static __inline__ uint32_t write_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
+{
+	uint32_t w_value = value & w_mask;
+	uint32_t new_register = w_write_bits(w_value, reg, w_mask);
+
+	uint32_t w0_value = value & w0_mask;
+	new_register = w0_write_bits(w0_value, new_register, w0_mask);
+
+	uint32_t t_value = value & t_mask;
+
+	uint32_t x_value = t_write_bits(t_value, new_register, t_mask);
+
+	return x_value;
+}
 
 #endif

@@ -463,3 +463,37 @@ void test_toggle_bits(void)
 	result = result ^ (g_reg & t_mask);
 	TEST_ASSERT_EQUAL_HEX32(expected, result);
 }
+
+void test_write_bits(void)
+{
+	// bits of val, reg and mask here repeat values in the 'rw', 'w0' and 't' tables
+	uint32_t val     = 0b00001111;
+	uint32_t reg     = 0b00110011;
+	uint32_t mask    = 0b01010101;
+
+	uint32_t w_val = val;
+	uint32_t w_reg = reg;
+	uint32_t w_mask = mask;
+
+	uint32_t w0_val = val << 8;
+	uint32_t w0_reg = reg << 8;
+	uint32_t w0_mask = mask << 8;
+
+	uint32_t t_val = val << 16;
+	uint32_t t_reg = reg << 16;
+	uint32_t t_mask = mask << 16;
+
+	// part of the 32bit number which must be keep
+	uint32_t k_val = val << 24;
+	uint32_t k_reg = reg << 24;
+	uint32_t k_mask = 0;
+
+	uint32_t g_val =  t_val | w0_val | w_val | k_val;
+	uint32_t g_reg =  t_reg | w0_reg | w_reg | k_reg;
+	uint32_t g_mask = t_mask| w0_mask| w_mask| k_mask;
+
+	uint32_t expected = 0x33272327;
+	uint32_t result = write_bits(g_val, g_reg, w_mask, w0_mask, t_mask);
+	result = result ^ (g_reg & t_mask);
+	TEST_ASSERT_EQUAL_HEX32(expected, result);
+}
