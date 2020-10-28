@@ -147,9 +147,14 @@ void test_w(void)
 	uint32_t val    = 0b00001111;
 	uint32_t reg    = 0b00110011;
 	uint32_t w_mask = 0b01010101;
+	uint32_t expect = 0b00100111;
 
-	uint32_t result = w_write_bits(val, reg, w_mask);
+	uint32_t v_mask = 0xFF;
+	uint32_t result = w_write_bits(val, v_mask,reg, w_mask);
 
+	TEST_ASSERT_EQUAL_HEX8(expect, result);
+
+	// bitwise compare
 	for (size_t i = 0; i < 8; i++)
 	{
 		// index = 0b00000vrm -> 0b0111 -> 0x07
@@ -160,6 +165,14 @@ void test_w(void)
 		reg >>= 1;
 		w_mask >>= 1;
 	}
+
+
+	val    = 0b00001111;
+	reg    = 0b00110011;
+	w_mask = 0b01010101;
+	v_mask = 0x00;
+	result = w_write_bits(val, v_mask, reg, w_mask);
+	TEST_ASSERT_EQUAL_HEX8(reg, result);
 }
 
 void test_w_set(void)
@@ -169,7 +182,7 @@ void test_w_set(void)
 	uint32_t reg    = 0b00110011;
 	uint32_t w_mask = 0b01010101;
 
-	uint32_t result = w_set_bits(val, reg, w_mask);
+	uint32_t result = w_set_bits(val,reg, w_mask);
 
 	for (size_t i = 0; i < 8; i++)
 	{
@@ -231,9 +244,14 @@ void test_w0(void)
 	uint32_t val     = 0b00001111;
 	uint32_t reg     = 0b00110011;
 	uint32_t w0_mask = 0b01010101;
+	uint32_t expect  = 0b00100011;
 
-	uint32_t result = w0_write_bits(val, reg, w0_mask);
+	uint32_t v_mask = 0xFF;
+	uint32_t result = w0_write_bits(val, v_mask, reg, w0_mask);
 
+	TEST_ASSERT_EQUAL_HEX8(expect, result);
+
+	// Bitwise compare
 	for (size_t i = 0; i < 8; i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (w0_mask & 0x01);
@@ -243,6 +261,13 @@ void test_w0(void)
 		reg >>= 1;
 		w0_mask >>= 1;
 	}
+
+	val    = 0b00001111;
+	reg    = 0b00110011;
+	w0_mask = 0b01010101;
+	v_mask = 0x00;
+	result = w0_write_bits(val, v_mask, reg, w0_mask);
+	TEST_ASSERT_EQUAL_HEX8(reg, result);
 }
 
 
@@ -252,9 +277,14 @@ void test_t(void)
 	uint32_t val     = 0b00001111;
 	uint32_t reg     = 0b00110011;
 	uint32_t t_mask  = 0b01010101;
+	uint32_t expect  = 0b00110110; // treat all the bits as read-write except ones masked as toggleable, i.e. we want to keep their values
 
-	uint32_t result = t_write_bits(val, reg, t_mask);
+	uint32_t v_mask = 0xFF;
+	uint32_t result = t_write_bits(val, v_mask, reg, t_mask);
 
+	TEST_ASSERT_EQUAL_HEX8(expect, result);
+
+	// Bitwise compare
 	for (size_t i = 0; i < 8; i++)
 	{
 		size_t index = ((val & 0x01) << 2) | ((reg & 0x01) << 1) | (t_mask & 0x01);
@@ -264,6 +294,15 @@ void test_t(void)
 		reg >>= 1;
 		t_mask >>= 1;
 	}
+
+	val    = 0b00001111;
+	reg    = 0b00110011;
+	t_mask = 0b01010101;
+	v_mask = 0x00;
+	expect = 0b00100010; // treat all the bits as read-write except ones masked as toggleable, i.e. we want to keep their values
+
+	result = t_write_bits(val, v_mask, reg, t_mask);
+	TEST_ASSERT_EQUAL_HEX8(expect, result); // we write 0's to toggleable bits in order to keep register value
 }
 
 void test_t_set_bits(void)
@@ -492,8 +531,15 @@ void test_write_bits(void)
 	uint32_t g_reg =  t_reg | w0_reg | w_reg | k_reg;
 	uint32_t g_mask = t_mask| w0_mask| w_mask| k_mask;
 
+	uint32_t v_mask = 0xFFFFFFFF;
 	uint32_t expected = 0x33272327;
-	uint32_t result = write_bits(g_val, g_reg, w_mask, w0_mask, t_mask);
+	uint32_t result = write_bits(g_val, v_mask, g_reg, w_mask, w0_mask, t_mask);
+	result = result ^ (g_reg & t_mask);
+	TEST_ASSERT_EQUAL_HEX32(expected, result);
+
+	v_mask = 0x00000000;
+	expected = g_reg;
+	result = write_bits(g_val, v_mask, g_reg, w_mask, w0_mask, t_mask);
 	result = result ^ (g_reg & t_mask);
 	TEST_ASSERT_EQUAL_HEX32(expected, result);
 }
