@@ -12,17 +12,17 @@
 #define USB_W_MASK  0x070F
 #define USB_W0_MASK 0x8080
 #define USB_T_MASK  0x7070
-#define USB_R_MASK  0x0800
+#define USB_RO_MASK  0x0800
 
 #if ((USB_W_MASK & USB_W0_MASK) != 0) || ((USB_W_MASK & USB_T_MASK) != 0) || ((USB_T_MASK & USB_W0_MASK) != 0)
 #error "Masks have overlapping bits!"
 #endif
 
-#if ((USB_W_MASK & USB_R_MASK) != 0) || ((USB_W0_MASK & USB_R_MASK) != 0) || ((USB_T_MASK & USB_R_MASK) != 0)
+#if ((USB_W_MASK & USB_R_MASK) != 0) || ((USB_W0_MASK & USB_RO_MASK) != 0) || ((USB_T_MASK & USB_RO_MASK) != 0)
 #error "Masks and Read-only mask have overlapping bits!"
 #endif
 
-#if ((USB_W_MASK | USB_W0_MASK | USB_T_MASK | USB_R_MASK) != 0xFFFF)
+#if ((USB_W_MASK | USB_W0_MASK | USB_T_MASK | USB_RO_MASK) != 0xFFFF)
 #error "Mask's bits missing!"
 #endif
 
