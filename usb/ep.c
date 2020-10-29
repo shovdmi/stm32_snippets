@@ -36,32 +36,274 @@ inline void ep_set_value(uint8_t ep_number, uint16_t value)
 #endif
 
 
-// here we assume that one calls functions below using the value of Endpoint register as a parameter
-// i.e. : ep_value = *(EP[ep_num].EPnR);
-inline uint16_t ep_set_ep_address(uint16_t ep_value, uint8_t address)
-{
-	assert((address & 0x0F) == address);
+/* -------------------------------------------------------------------------- */
 
-	ep_value = write_bits(address, ep_value, USB_W_MASK, USB_W0_MASK, USB_T_MASK);
+/* here we assume that one calls functions below using the value of Endpoint register as a parameter
+ * i.e. : ep_value = *(EP[ep_num].EPnR);
+*/
+inline uint16_t ep_write_ep_address(uint16_t ep_value, uint8_t address)
+{
+	assert((address & USB_EPADDR_FIELD_Msk) == address);
+
+	//ep_value = write_bits(address, USB_EPADDR_FIELD_Msk, ep_value, USB_W_MASK, USB_W0_MASK, USB_T_MASK);
+	ep_value = EP_WRITE_BITs(ep_value, address, USB_EPADDR_FIELD_Msk);
 	return ep_value;
 }
 
-inline uint16_t ep_set_setup(uint16_t ep_value)
+inline uint16_t ep_get_ep_address(uint16_t ep_value)
 {
-	ep_value = set_bits(USB_EP_CONTROL, ep_value, USB_W_MASK, USB_W0_MASK, USB_T_MASK);
-	return ep_value
+	return (ep_value & USB_EPADDR_FIELD_Msk) >> USB_EPADDR_FIELD_Pos;
 }
 
-inline uint16_t ep_clear_setup(uint16_t ep_value)
-{
-	ep_value = clear_bits(USB_EP_CONTROL, ep_value, USB_W_MASK, USB_W0_MASK, USB_T_MASK);
-	return ep_value
-}
-
+/* -------------------------------------------------------------------------- */
 inline uint16_t ep_get_setup(uint16_t ep_value)
 {
-	return !!(ep_value & USB_EP_CONTROL);
+	return (ep_value & USB_EP_SETUP_Msk) >> USB_EP_SETUP_Pos;
 }
+
+/* -------------------------------------------------------------------------- */
+inline uint16_t ep_write_ep_type(uint16_t ep_value)
+{
+	ep_value = EP_WRITE_BITS(ep_value, USB_EP_T_FIELD, USB_EP_T_FIELD_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_set_ep_type(uint16_t ep_value)
+{
+	ep_value = EP_SET_BITS(ep_value, USB_EP_T_FIELD, USB_EP_T_FIELD_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_clear_ep_type(uint16_t ep_value)
+{
+	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_T_FIELD, USB_EP_T_FIELD_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_toggle_ep_type(uint16_t ep_value)
+{
+	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_T_FIELD, USB_EP_T_FIELD_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_get_ep_type(uint16_t ep_value)
+{
+	return (ep_value & USB_EP_T_FIELD_Msk) >> USB_EP_T_FIELD_Pos;
+}
+
+/* -------------------------------------------------------------------------- */
+inline uint16_t ep_write_ep_kind(uint16_t ep_value)
+{
+	ep_value = EP_WRITE_BITS(ep_value, USB_EP_KIND, USB_EP_KIND_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_set_ep_kind(uint16_t ep_value)
+{
+	ep_value = EP_SET_BITS(ep_value, USB_EP_KIND, USB_EP_KIND_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_clear_ep_kind(uint16_t ep_value)
+{
+	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_KIND, USB_EP_KIND_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_toggle_ep_kind(uint16_t ep_value)
+{
+	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_KIND, USB_EP_KIND_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_get_ep_kind(uint16_t ep_value)
+{
+	return (ep_value & USB_EP_KIND_Msk) >> USB_EP_KIND_Pos;
+}
+
+/* -------------------------------------------------------------------------- */
+inline uint16_t ep_write_ctr_rx(uint16_t ep_value)
+{
+	ep_value = EP_WRITE_BITS(ep_value, USB_EP_CTR_RX, USB_EP_CTR_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_set_ctr_rx(uint16_t ep_value)
+{
+	ep_value = EP_SET_BITS(ep_value, USB_EP_CTR_RX, USB_EP_CTR_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_clear_ctr_rx(uint16_t ep_value)
+{
+	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_CTR_RX, USB_EP_CTR_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_toggle_ctr_rx(uint16_t ep_value)
+{
+	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_CTR_RX, USB_EP_CTR_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_get_ctr_rx(uint16_t ep_value)
+{
+	return (ep_value & USB_EP_CTR_RX_Msk) >> USB_EP_CTR_RX_Pos;
+}
+
+/* -------------------------------------------------------------------------- */
+inline uint16_t ep_write_ctr_tx(uint16_t ep_value)
+{
+	ep_value = EP_WRITE_BITS(ep_value, USB_EP_CTR_TX, USB_EP_CTR_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_set_ctr_tx(uint16_t ep_value)
+{
+	ep_value = EP_SET_BITS(ep_value, USB_EP_CTR_TX, USB_EP_CTR_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_clear_ctr_tx(uint16_t ep_value)
+{
+	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_CTR_TX, USB_EP_CTR_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_toggle_ctr_tx(uint16_t ep_value)
+{
+	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_CTR_TX, USB_EP_CTR_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_get_ctr_tx(uint16_t ep_value)
+{
+	return (ep_value & USB_EP_CTR_TX_Msk) >> USB_EP_CTR_TX_Pos;
+}
+
+/* -------------------------------------------------------------------------- */
+inline uint16_t ep_write_dtog_rx(uint16_t ep_value)
+{
+	ep_value = EP_WRITE_BITS(ep_value, USB_EP_DTOG_RX, USB_EP_DTOG_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_set_ep_dtog_rx(uint16_t ep_value)
+{
+	ep_value = EP_SET_BITS(ep_value, USB_EP_DTOG_RX, USB_EP_DTOG_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_clear_ep_dtog_rx(uint16_t ep_value)
+{
+	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_DTOG_RX, USB_EP_DTOG_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_toggle_ep_dtog_rx(uint16_t ep_value)
+{
+	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_DTOG_RX, USB_EP_DTOG_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_get_ep_dtog_rx(uint16_t ep_value)
+{
+	return (ep_value & USB_EP_DTOG_RX_Msk) >> USB_EP_DTOG_RX_Pos;
+}
+/* -------------------------------------------------------------------------- */
+inline uint16_t ep_write_dtog_tx(uint16_t ep_value)
+{
+	ep_value = EP_WRITE_BITS(ep_value, USB_EP_DTOG_TX, USB_EP_DTOG_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_set_ep_dtog_tx(uint16_t ep_value)
+{
+	ep_value = EP_SET_BITS(ep_value, USB_EP_DTOG_TX, USB_EP_DTOG_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_clear_ep_dtog_tx(uint16_t ep_value)
+{
+	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_DTOG_TX, USB_EP_DTOG_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_toggle_ep_dtog_tx(uint16_t ep_value)
+{
+	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_DTOG_TX, USB_EP_DTOG_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_get_ep_dtog_tx(uint16_t ep_value)
+{
+	return (ep_value & USB_EP_DTOG_TX_Msk) >> USB_EP_DTOG_TX_Pos;
+}
+
+/* -------------------------------------------------------------------------- */
+inline uint16_t ep_write_stat_rx(uint16_t ep_value)
+{
+	ep_value = EP_WRITE_BITS(ep_value, USB_EP_STAT_RX, USB_EP_STAT_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_set_stat_rx(uint16_t ep_value)
+{
+	ep_value = EP_SET_BITS(ep_value, USB_EP_STAT_RX, USB_EP_STAT_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_clear_stat_rx(uint16_t ep_value)
+{
+	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_STAT_RX, USB_EP_STAT_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_toggle_stat_rx(uint16_t ep_value)
+{
+	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_STAT_RX, USB_EP_STAT_RX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_get_stat_rx(uint16_t ep_value)
+{
+	return (ep_value & USB_EP_STAT_RX_Msk) >> USB_EP_STAT_RX_Pos;
+}
+
+/* -------------------------------------------------------------------------- */
+inline uint16_t ep_write_stat_tx(uint16_t ep_value)
+{
+	ep_value = EP_WRITE_BITS(ep_value, USB_EP_STAT_TX, USB_EP_STAT_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_set_stat_tx(uint16_t ep_value)
+{
+	ep_value = EP_SET_BITS(ep_value, USB_EP_STAT_TX, USB_EP_STAT_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_clear_stat_tx(uint16_t ep_value)
+{
+	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_STAT_TX, USB_EP_STAT_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_toggle_stat_tx(uint16_t ep_value)
+{
+	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_STAT_TX, USB_EP_STAT_TX_Msk);
+	return ep_value
+}
+
+inline uint16_t ep_get_stat_tx(uint16_t ep_value)
+{
+	return (ep_value & USB_EP_STAT_TX_Msk) >> USB_EP_STAT_TX_Pos;
+}
+
+
+
+/* -------------------------------------------------------------------------- */
+
 
 inline uint16_t ep_set_direction(uint16_t ep_value, enum ep_direction_t direction)
 {
