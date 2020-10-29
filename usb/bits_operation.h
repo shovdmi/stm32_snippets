@@ -29,7 +29,7 @@
 static __inline__ uint32_t w_write_bits(uint32_t value, uint32_t v_mask, uint32_t rw_register, uint32_t rw_mask)
 {
 	// A: rw_register; B: value; C: rw_mask; D: v_mask;
-	uint32_t result = (rw_register | rw_mask) & (rw_register | v_mask) & ( value | ~rw_mask | ~v_mask);
+	uint32_t result = (rw_register | rw_mask) & (rw_register | v_mask) & ( value | (~rw_mask) | (~v_mask));
 	return result;
 }
 
@@ -80,7 +80,7 @@ static __inline__ uint32_t w_toggle_bits(uint32_t value, uint32_t rw_register, u
  */
 static __inline__ uint32_t w0_write_bits(uint32_t value, uint32_t v_mask, uint32_t w0_register, uint32_t w0_mask)
 {
-	uint32_t result = w0_register & ( value | ~w0_mask | ~v_mask);
+	uint32_t result = w0_register & ( value | (~w0_mask) | (~v_mask));
 	return result;
 }
 
@@ -111,7 +111,7 @@ static __inline__ uint32_t w0_write_bits(uint32_t value, uint32_t v_mask, uint32
  */
 static __inline__ uint32_t t_write_bits(uint32_t value, uint32_t v_mask, uint32_t t_register, uint32_t t_mask)
 {
-	uint32_t result = t_register & ~t_mask | t_register & ~value & v_mask | ~t_register & value & t_mask & v_mask;
+	uint32_t result = (t_register & (~t_mask)) | (t_register & (~value) & v_mask) | ((~t_register) & value & t_mask & v_mask);
 	return result;
 }
 
@@ -128,8 +128,7 @@ static __inline__ uint32_t t_set_bits(uint32_t value, uint32_t t_register, uint3
 	// i.e. we need to make a preceding XOR to get a number which will be XOR-ed with 'reg' by hardware
 	// (t_register | value) ^ t_register  ^(by hw)  t_register  == (t_register | value)
 	uint32_t x_value = (t_register | value) ^ (t_register & t_mask);
-	//printf("t_register | value =0x%08X, t_register & t_mask = 0x%08X, x_value = 0x%08X\n", (t_register | value),\
-(t_register & t_mask), x_value);
+	//printf("t_register | value =0x%08X, t_register & t_mask = 0x%08X, x_value = 0x%08X\n", (t_register | value), (t_register & t_mask), x_value);
 	return x_value;
 }
 
@@ -148,7 +147,7 @@ static __inline__ uint32_t t_clear_bits(uint32_t value, uint32_t t_register, uin
 	// For clearing a bit we use bitwise-AND between r and 1 (one) preceding hardware bitwise-XOR,
 	// i.e (r & 1) == r ----> (this xor is made by usb-core) r ^ r = 0
 	value = value & t_mask;
-	uint32_t x_value = (t_register & value) | (t_register & ~t_mask);
+	uint32_t x_value = (t_register & value) | (t_register & (~t_mask));
 	return x_value;
 }
 
@@ -161,6 +160,7 @@ static __inline__ uint32_t t_toggle_bits(uint32_t value, uint32_t t_register, ui
 
 static __inline__ uint32_t set_bits(uint32_t value, uint32_t reg, uint32_t w_mask, uint32_t w0_mask, uint32_t t_mask)
 {
+	(void)w0_mask;
 	uint32_t w_value = value & w_mask;
 	uint32_t t_value = value & t_mask;
 
