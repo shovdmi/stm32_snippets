@@ -1,6 +1,11 @@
-#include "debug.h"
+//#include "debug.h"
+#include <stdint.h>
 #include "ep.h"
 #include "bits_operation.h"
+
+#ifdef TEST_ON_TARGET
+#define ASSERT(...)
+#endif
 
 /* bit positions */ 
 #define USB_EP_CTR_RX_Pos                       (15U)                          

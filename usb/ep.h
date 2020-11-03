@@ -36,4 +36,7 @@ enum ep_direction_t {
 	BTABLE_IN  = 0b10,
 };
 
+extern uint16_t ep_write_ep_address(uint16_t ep_value, uint8_t address);
+extern uint16_t ep_get_ep_address(uint16_t ep_value);
+
 #endif // EP_H
