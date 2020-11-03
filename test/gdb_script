@@ -1,3 +1,4 @@
 target extended-remote :2331
+file /build/test/out/test_bits_operations.elf
 load
 monitor semihosting enable
