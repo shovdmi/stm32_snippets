@@ -118,7 +118,7 @@
       - -mthumb
 #      - --specs=nosys.specs
       - -Og
-      - -ggdb
+      - -ggdb3
       - --specs=rdimon.specs
       - -lrdimon
       - -T../stm32/STM32F103X6_FLASH.ld
