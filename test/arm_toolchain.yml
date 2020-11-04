@@ -103,7 +103,9 @@
       - -o "${2}"
       - -Wall
       - -Og
-      - -ggdb
+      - -g3
+      - -fno-eliminate-unused-debug-symbols
+      - -ggdb3
       - --specs=rdimon.specs
       - -I"$": COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR
       - -I"$": COLLECTION_PATHS_RELEASE_TOOLCHAIN_INCLUDE
