@@ -1,4 +1,5 @@
+set output-radix 16
 target extended-remote :2331
-file /build/test/out/test_bits_operations.elf
+file build/test/out/test_ep_reg.elf
 load
 monitor semihosting enable
