@@ -227,15 +227,15 @@ void test_stat_rx_set_clear(void)
 		// setting the bits
 		ep = USB->EP0R;
 		ep = ep_set_stat_rx(ep, value);
-		TEST_ASSERT_EQUAL_HEX16(value << USB_EPRX_STAT_Pos, value << USB_EPRX_STAT_Pos & ep);
+		TEST_ASSERT_EQUAL_HEX16(value << USB_EPRX_STAT_Pos, (value << USB_EPRX_STAT_Pos) & ep);
 
 		USB->EP0R = ep;
 
 		ep = USB->EP0R;
-		TEST_ASSERT_EQUAL_HEX16(value << USB_EPRX_STAT_Pos, value << USB_EPRX_STAT_Pos & ep);
+		TEST_ASSERT_EQUAL_HEX16(value << USB_EPRX_STAT_Pos, (value << USB_EPRX_STAT_Pos) & ep);
 
 		new_value = ep_get_stat_rx(ep);
-		TEST_ASSERT_EQUAL_HEX16(value << USB_EPRX_STAT_Pos, value << USB_EPRX_STAT_Pos & ep);
+		TEST_ASSERT_EQUAL_HEX16(value << USB_EPRX_STAT_Pos, (new_value << USB_EPRX_STAT_Pos) & ep);
 
 		// clearing the bits
 		ep = USB->EP0R;
