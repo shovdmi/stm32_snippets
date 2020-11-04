@@ -100,27 +100,35 @@ uint16_t ep_get_setup(uint16_t ep_value)
 }
 
 /* -------------------------------------------------------------------------- */
-uint16_t ep_write_ep_type(uint16_t ep_value)
+uint16_t ep_write_ep_type(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_WRITE_BITS(ep_value, USB_EP_T_FIELD, USB_EP_T_FIELD_Msk);
+	value = value << USB_EP_T_FIELD_Pos;
+	ASSERT((value & USB_EP_T_FIELD_Msk) == value);
+	ep_value = EP_WRITE_BITS(ep_value, value, USB_EP_T_FIELD_Msk);
 	return ep_value;
 }
 
-uint16_t ep_set_ep_type(uint16_t ep_value)
+uint16_t ep_set_ep_type(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_SET_BITS(ep_value, USB_EP_T_FIELD, USB_EP_T_FIELD_Msk);
+	value = value << USB_EP_T_FIELD_Pos;
+	ASSERT((value & USB_EP_T_FIELD_Msk) == value);
+	ep_value = EP_SET_BITS(ep_value, value, USB_EP_T_FIELD_Msk);
 	return ep_value;
 }
 
-uint16_t ep_clear_ep_type(uint16_t ep_value)
+uint16_t ep_clear_ep_type(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_T_FIELD, USB_EP_T_FIELD_Msk);
+	value = value << USB_EP_T_FIELD_Pos;
+	ASSERT((value & USB_EP_T_FIELD_Msk) == value);
+	ep_value = EP_CLEAR_BITS(ep_value, value, USB_EP_T_FIELD_Msk);
 	return ep_value;
 }
 
-uint16_t ep_toggle_ep_type(uint16_t ep_value)
+uint16_t ep_toggle_ep_type(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_T_FIELD, USB_EP_T_FIELD_Msk);
+	value = value << USB_EP_T_FIELD_Pos;
+	ASSERT((value & USB_EP_T_FIELD_Msk) == value);
+	ep_value = EP_TOGGLE_BITS(ep_value, value, USB_EP_T_FIELD_Msk);
 	return ep_value;
 }
 
@@ -130,27 +138,31 @@ uint16_t ep_get_ep_type(uint16_t ep_value)
 }
 
 /* -------------------------------------------------------------------------- */
-uint16_t ep_write_ep_kind(uint16_t ep_value)
+uint16_t ep_write_ep_kind(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_WRITE_BITS(ep_value, USB_EP_KIND, USB_EP_KIND_Msk);
+	value = value << USB_EP_KIND_Pos;
+	ep_value = EP_WRITE_BITS(ep_value, value, USB_EP_KIND_Msk);
 	return ep_value;
 }
 
-uint16_t ep_set_ep_kind(uint16_t ep_value)
+uint16_t ep_set_ep_kind(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_SET_BITS(ep_value, USB_EP_KIND, USB_EP_KIND_Msk);
+	value = value << USB_EP_KIND_Pos;
+	ep_value = EP_SET_BITS(ep_value, value, USB_EP_KIND_Msk);
 	return ep_value;
 }
 
-uint16_t ep_clear_ep_kind(uint16_t ep_value)
+uint16_t ep_clear_ep_kind(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_KIND, USB_EP_KIND_Msk);
+	value = value << USB_EP_KIND_Pos;
+	ep_value = EP_CLEAR_BITS(ep_value, value, USB_EP_KIND_Msk);
 	return ep_value;
 }
 
-uint16_t ep_toggle_ep_kind(uint16_t ep_value)
+uint16_t ep_toggle_ep_kind(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_KIND, USB_EP_KIND_Msk);
+	value = value << USB_EP_KIND_Pos;
+	ep_value = EP_TOGGLE_BITS(ep_value, value, USB_EP_KIND_Msk);
 	return ep_value;
 }
 
@@ -160,27 +172,31 @@ uint16_t ep_get_ep_kind(uint16_t ep_value)
 }
 
 /* -------------------------------------------------------------------------- */
-uint16_t ep_write_ctr_rx(uint16_t ep_value)
+uint16_t ep_write_ctr_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_WRITE_BITS(ep_value, USB_EP_CTR_RX, USB_EP_CTR_RX_Msk);
+	value = value << USB_EP_CTR_RX_STAT_Pos;
+	ep_value = EP_WRITE_BITS(ep_value, value, USB_EP_CTR_RX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_set_ctr_rx(uint16_t ep_value)
+uint16_t ep_set_ctr_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_SET_BITS(ep_value, USB_EP_CTR_RX, USB_EP_CTR_RX_Msk);
+	value = value << USB_EP_CTR_RX_STAT_Pos;
+	ep_value = EP_SET_BITS(ep_value, value, USB_EP_CTR_RX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_clear_ctr_rx(uint16_t ep_value)
+uint16_t ep_clear_ctr_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_CTR_RX, USB_EP_CTR_RX_Msk);
+	value = value << USB_EP_CTR_RX_STAT_Pos;
+	ep_value = EP_CLEAR_BITS(ep_value, value, USB_EP_CTR_RX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_toggle_ctr_rx(uint16_t ep_value)
+uint16_t ep_toggle_ctr_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_CTR_RX, USB_EP_CTR_RX_Msk);
+	value = value << USB_EP_CTR_RX_STAT_Pos;
+	ep_value = EP_TOGGLE_BITS(ep_value, value, USB_EP_CTR_RX_Msk);
 	return ep_value;
 }
 
@@ -190,57 +206,66 @@ uint16_t ep_get_ctr_rx(uint16_t ep_value)
 }
 
 /* -------------------------------------------------------------------------- */
-uint16_t ep_write_ctr_tx(uint16_t ep_value)
+uint16_t ep_write_ctr_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_WRITE_BITS(ep_value, USB_EP_CTR_TX, USB_EP_CTR_TX_Msk);
+	value = value << USB_EP_CTR_TX_STAT_Pos;
+	ep_value = EP_WRITE_BITS(ep_value, value, USB_EP_CTR_TX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_set_ctr_tx(uint16_t ep_value)
+uint16_t ep_set_ctr_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_SET_BITS(ep_value, USB_EP_CTR_TX, USB_EP_CTR_TX_Msk);
+	value = value << USB_EP_CTR_TX_STAT_Pos;
+	ep_value = EP_SET_BITS(ep_value, value, USB_EP_CTR_TX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_clear_ctr_tx(uint16_t ep_value)
+uint16_t ep_clear_ctr_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_CTR_TX, USB_EP_CTR_TX_Msk);
+	value = value << USB_EP_CTR_TX_STAT_Pos;
+	ep_value = EP_CLEAR_BITS(ep_value, value, USB_EP_CTR_TX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_toggle_ctr_tx(uint16_t ep_value)
+uint16_t ep_toggle_ctr_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_CTR_TX, USB_EP_CTR_TX_Msk);
+	value = value << USB_EP_CTR_TX_STAT_Pos;
+	ep_value = EP_TOGGLE_BITS(ep_value, value, USB_EP_CTR_TX_Msk);
 	return ep_value;
 }
 
 uint16_t ep_get_ctr_tx(uint16_t ep_value)
 {
+	value = value << USB_EP_CTR_TX_STAT_Pos;
 	return (ep_value & USB_EP_CTR_TX_Msk) >> USB_EP_CTR_TX_Pos;
 }
 
 /* -------------------------------------------------------------------------- */
-uint16_t ep_write_dtog_rx(uint16_t ep_value)
+uint16_t ep_write_dtog_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_WRITE_BITS(ep_value, USB_EP_DTOG_RX, USB_EP_DTOG_RX_Msk);
+	value = value << USB_EP_DTOG_RX_STAT_Pos;
+	ep_value = EP_WRITE_BITS(ep_value, value, USB_EP_DTOG_RX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_set_ep_dtog_rx(uint16_t ep_value)
+uint16_t ep_set_ep_dtog_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_SET_BITS(ep_value, USB_EP_DTOG_RX, USB_EP_DTOG_RX_Msk);
+	value = value << USB_EP_DTOG_RX_STAT_Pos;
+	ep_value = EP_SET_BITS(ep_value, value, USB_EP_DTOG_RX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_clear_ep_dtog_rx(uint16_t ep_value)
+uint16_t ep_clear_ep_dtog_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_DTOG_RX, USB_EP_DTOG_RX_Msk);
+	value = value << USB_EP_DTOG_RX_STAT_Pos;
+	ep_value = EP_CLEAR_BITS(ep_value, value, USB_EP_DTOG_RX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_toggle_ep_dtog_rx(uint16_t ep_value)
+uint16_t ep_toggle_ep_dtog_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_DTOG_RX, USB_EP_DTOG_RX_Msk);
+	value = value << USB_EP_DTOG_RX_STAT_Pos;
+	ep_value = EP_TOGGLE_BITS(ep_value, value, USB_EP_DTOG_RX_Msk);
 	return ep_value;
 }
 
@@ -249,57 +274,65 @@ uint16_t ep_get_ep_dtog_rx(uint16_t ep_value)
 	return (ep_value & USB_EP_DTOG_RX_Msk) >> USB_EP_DTOG_RX_Pos;
 }
 /* -------------------------------------------------------------------------- */
-uint16_t ep_write_dtog_tx(uint16_t ep_value)
+uint16_t ep_write_dtog_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_WRITE_BITS(ep_value, USB_EP_DTOG_TX, USB_EP_DTOG_TX_Msk);
+	value = value << USB_EP_DTOG_TX_STAT_Pos;
+	ep_value = EP_WRITE_BITS(ep_value, value, USB_EP_DTOG_TX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_set_ep_dtog_tx(uint16_t ep_value)
+uint16_t ep_set_ep_dtog_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_SET_BITS(ep_value, USB_EP_DTOG_TX, USB_EP_DTOG_TX_Msk);
+	value = value << USB_EP_DTOG_TX_STAT_Pos;
+	ep_value = EP_SET_BITS(ep_value, value, USB_EP_DTOG_TX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_clear_ep_dtog_tx(uint16_t ep_value)
+uint16_t ep_clear_ep_dtog_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_CLEAR_BITS(ep_value, USB_EP_DTOG_TX, USB_EP_DTOG_TX_Msk);
+	value = value << USB_EP_DTOG_TX_STAT_Pos;
+	ep_value = EP_CLEAR_BITS(ep_value, value, USB_EP_DTOG_TX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_toggle_ep_dtog_tx(uint16_t ep_value)
+uint16_t ep_toggle_ep_dtog_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_TOGGLE_BITS(ep_value, USB_EP_DTOG_TX, USB_EP_DTOG_TX_Msk);
+	value = value << USB_EP_DTOG_TX_STAT_Pos;
+	ep_value = EP_TOGGLE_BITS(ep_value, value, USB_EP_DTOG_TX_Msk);
 	return ep_value;
 }
 
-uint16_t ep_get_ep_dtog_tx(uint16_t ep_value)
+uint16_t ep_get_ep_dtog_tx(uint16_t ep_value, uint16_t value)
 {
 	return (ep_value & USB_EP_DTOG_TX_Msk) >> USB_EP_DTOG_TX_Pos;
 }
 
 /* -------------------------------------------------------------------------- */
-uint16_t ep_write_stat_rx(uint16_t ep_value)
+uint16_t ep_write_stat_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_WRITE_BITS(ep_value, USB_EPRX_STAT, USB_EPRX_STAT_Msk);
+	value = value << USB_EPRX_STAT_Pos;
+	ep_value = EP_WRITE_BITS(ep_value, value, USB_EPRX_STAT_Msk);
 	return ep_value;
 }
 
-uint16_t ep_set_stat_rx(uint16_t ep_value)
+uint16_t ep_set_stat_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_SET_BITS(ep_value, USB_EPRX_STAT, USB_EPRX_STAT_Msk);
+	value = value << USB_EPRX_STAT_Pos;
+	ep_value = EP_SET_BITS(ep_value, value, USB_EPRX_STAT_Msk);
 	return ep_value;
 }
 
-uint16_t ep_clear_stat_rx(uint16_t ep_value)
+uint16_t ep_clear_stat_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_CLEAR_BITS(ep_value, USB_EPRX_STAT, USB_EPRX_STAT_Msk);
+	value = value << USB_EPRX_STAT_Pos;
+	ep_value = EP_CLEAR_BITS(ep_value, value, USB_EPRX_STAT_Msk);
 	return ep_value;
 }
 
-uint16_t ep_toggle_stat_rx(uint16_t ep_value)
+uint16_t ep_toggle_stat_rx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_TOGGLE_BITS(ep_value, USB_EPRX_STAT, USB_EPRX_STAT_Msk);
+	value = value << USB_EPRX_STAT_Pos;
+	ep_value = EP_TOGGLE_BITS(ep_value, value, USB_EPRX_STAT_Msk);
 	return ep_value;
 }
 
@@ -309,27 +342,31 @@ uint16_t ep_get_stat_rx(uint16_t ep_value)
 }
 
 /* -------------------------------------------------------------------------- */
-uint16_t ep_write_stat_tx(uint16_t ep_value)
+uint16_t ep_write_stat_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_WRITE_BITS(ep_value, USB_EPTX_STAT, USB_EPTX_STAT_Msk);
+	value = value << USB_EPTX_STAT_Pos;
+	ep_value = EP_WRITE_BITS(ep_value, value, USB_EPTX_STAT_Msk);
 	return ep_value;
 }
 
-uint16_t ep_set_stat_tx(uint16_t ep_value)
+uint16_t ep_set_stat_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_SET_BITS(ep_value, USB_EPTX_STAT, USB_EPTX_STAT_Msk);
+	value = value << USB_EPTX_STAT_Pos;
+	ep_value = EP_SET_BITS(ep_value, value, USB_EPTX_STAT_Msk);
 	return ep_value;
 }
 
-uint16_t ep_clear_stat_tx(uint16_t ep_value)
+uint16_t ep_clear_stat_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_CLEAR_BITS(ep_value, USB_EPTX_STAT, USB_EPTX_STAT_Msk);
+	value = value << USB_EPTX_STAT_Pos;
+	ep_value = EP_CLEAR_BITS(ep_value, value, USB_EPTX_STAT_Msk);
 	return ep_value;
 }
 
-uint16_t ep_toggle_stat_tx(uint16_t ep_value)
+uint16_t ep_toggle_stat_tx(uint16_t ep_value, uint16_t value)
 {
-	ep_value = EP_TOGGLE_BITS(ep_value, USB_EPTX_STAT, USB_EPTX_STAT_Msk);
+	value = value << USB_EPTX_STAT_Pos;
+	ep_value = EP_TOGGLE_BITS(ep_value, value, USB_EPTX_STAT_Msk);
 	return ep_value;
 }
 

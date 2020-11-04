@@ -39,4 +39,24 @@ enum ep_direction_t {
 extern uint16_t ep_write_ep_address(uint16_t ep_value, uint8_t address);
 extern uint16_t ep_get_ep_address(uint16_t ep_value);
 
+uint16_t ep_write_ep_type(uint16_t ep_value, uint16_t value);
+uint16_t ep_set_ep_type(uint16_t ep_value, uint16_t value);
+uint16_t ep_clear_ep_type(uint16_t ep_value, uint16_t value);
+uint16_t ep_toggle_ep_type(uint16_t ep_value, uint16_t value);
+uint16_t ep_get_ep_type(uint16_t ep_value);
+
+uint16_t ep_write_ep_kind(uint16_t ep_value, uint16_t value);
+uint16_t ep_set_ep_kind(uint16_t ep_value, uint16_t value);
+uint16_t ep_clear_ep_kind(uint16_t ep_value, uint16_t value);
+uint16_t ep_toggle_ep_kind(uint16_t ep_value, uint16_t value);
+uint16_t ep_get_ep_kind(uint16_t ep_value);
+
+uint16_t ep_write_ctr_rx(uint16_t ep_value, uint16_t value);
+uint16_t ep_set_ctr_rx(uint16_t ep_value, uint16_t value);
+uint16_t ep_clear_ctr_rx(uint16_t ep_value, uint16_t value);
+uint16_t ep_toggle_ctr_rx(uint16_t ep_value, uint16_t value);
+uint16_t ep_get_ctr_rx(uint16_t ep_value);
+
+
+
 #endif // EP_H
