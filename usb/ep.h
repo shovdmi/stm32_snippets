@@ -130,6 +130,44 @@ static inline uint16_t ep_get_ep_kind(uint16_t ep_value)
 }
 
 /* -------------------------------------------------------------------------- */
+static inline uint16_t ep_write_ep_type_kind(uint16_t ep_value, uint16_t value)
+{
+	ep_value = ep_write_ep_type(ep_value, value >> 1);
+	ep_value = ep_write_ep_kind(ep_value, value & 0x01);
+	return ep_value;
+}
+
+static inline uint16_t ep_set_ep_type_kind(uint16_t ep_value, uint16_t value)
+{
+	ep_value = ep_set_ep_type(ep_value, value >> 1);
+	ep_value = ep_set_ep_kind(ep_value, value & 0x01);
+	return ep_value;
+}
+
+static inline uint16_t ep_clear_ep_type_kind(uint16_t ep_value, uint16_t value)
+{
+	ep_value = ep_clear_ep_type(ep_value, value >> 1);
+	ep_value = ep_clear_ep_kind(ep_value, value & 0x01);
+	return ep_value;
+}
+
+static inline uint16_t ep_toggle_ep_type_kind(uint16_t ep_value, uint16_t value)
+{
+	ep_value = ep_toggle_ep_type(ep_value, value >> 1);
+	ep_value = ep_toggle_ep_kind(ep_value, value & 0x01);
+	return ep_value;
+}
+
+static inline uint16_t ep_get_ep_type_kind(uint16_t ep_value)
+{
+	uint16_t ep_type = ep_get_ep_type(ep_value);
+	uint16_t ep_kind = ep_get_ep_kind(ep_value);
+	ep_value = (ep_type << 1) | ep_kind;
+	return ep_value;
+}
+
+
+/* -------------------------------------------------------------------------- */
 static inline uint16_t ep_write_ctr_rx(uint16_t ep_value, uint16_t value)
 {
 	value = value << USB_EP_CTR_RX_Pos;

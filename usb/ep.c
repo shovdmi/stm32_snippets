@@ -1,3 +1,27 @@
+
+enum usb_stat_t {
+	STAT_DISABLED = 0,
+	STAT_STALL = 1,
+	STAT_NAK = 2,
+	STAT_VALID = 3,
+}
+
+enum usb_ep_type_t {
+	EP_TYPE_BULK = 0,
+	EP_TYPE_CONTROL = 1,
+	EP_TYPE_ISO = 2,
+	EP_TYPE_INTERRUPT = 3,
+}
+
+enum usb_ep_type_kind_t {
+	EP_TYPE_BULK =               0, // (0 << 1) | 0,
+	EP_TYPE_BULK_DBL_BUF=        1, // (0 << 1) | 1,
+	EP_TYPE_CONTROL =            2, // (1 << 1) | 0,
+	EP_TYPE_CONTROL_STATUS_OUT = 3, // (1 << 1) | 1,
+	EP_TYPE_ISO =                4, // (2 << 1) | 0,
+	EP_TYPE_INTERRUPT =          6, // (3 << 1) | 0,
+}
+
 /*
 inline uint16_t ep_read_value(uint8_t ep_number)
 {
