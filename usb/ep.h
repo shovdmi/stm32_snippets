@@ -3,56 +3,17 @@
 
 //#include "debug.h"
 #include <stdint.h>
-#include "ep.h"
+#include "stm32f1xx.h"
 #include "bits_operation.h"
 
 #ifdef TEST_ON_TARGET
 #define ASSERT(...)
 #endif
 
-/* bit positions */ 
-#define USB_EP_CTR_RX_Pos                       (15U)                          
-#define USB_EP_CTR_RX_Msk                       (0x1U << USB_EP_CTR_RX_Pos)    /*!< 0x00008000 */
-#define USB_EP_CTR_RX                           USB_EP_CTR_RX_Msk              /*!< EndPoint Correct TRansfer RX */
-#define USB_EP_DTOG_RX_Pos                      (14U)                          
-#define USB_EP_DTOG_RX_Msk                      (0x1U << USB_EP_DTOG_RX_Pos)   /*!< 0x00004000 */
-#define USB_EP_DTOG_RX                          USB_EP_DTOG_RX_Msk             /*!< EndPoint Data TOGGLE RX */
-#define USB_EPRX_STAT_Pos                       (12U)                          
-#define USB_EPRX_STAT_Msk                       (0x3U << USB_EPRX_STAT_Pos)    /*!< 0x00003000 */
-#define USB_EPRX_STAT                           USB_EPRX_STAT_Msk              /*!< EndPoint RX STATus bit field */
-#define USB_EP_SETUP_Pos                        (11U)                          
-#define USB_EP_SETUP_Msk                        (0x1U << USB_EP_SETUP_Pos)     /*!< 0x00000800 */
-#define USB_EP_SETUP                            USB_EP_SETUP_Msk               /*!< EndPoint SETUP */
-#define USB_EP_T_FIELD_Pos                      (9U)                           
-#define USB_EP_T_FIELD_Msk                      (0x3U << USB_EP_T_FIELD_Pos)   /*!< 0x00000600 */
-#define USB_EP_T_FIELD                          USB_EP_T_FIELD_Msk             /*!< EndPoint TYPE */
-#define USB_EP_KIND_Pos                         (8U)                           
-#define USB_EP_KIND_Msk                         (0x1U << USB_EP_KIND_Pos)      /*!< 0x00000100 */
-#define USB_EP_KIND                             USB_EP_KIND_Msk                /*!< EndPoint KIND */
-#define USB_EP_CTR_TX_Pos                       (7U)                           
-#define USB_EP_CTR_TX_Msk                       (0x1U << USB_EP_CTR_TX_Pos)    /*!< 0x00000080 */
-#define USB_EP_CTR_TX                           USB_EP_CTR_TX_Msk              /*!< EndPoint Correct TRansfer TX */
-#define USB_EP_DTOG_TX_Pos                      (6U)                           
-#define USB_EP_DTOG_TX_Msk                      (0x1U << USB_EP_DTOG_TX_Pos)   /*!< 0x00000040 */
-#define USB_EP_DTOG_TX                          USB_EP_DTOG_TX_Msk             /*!< EndPoint Data TOGGLE TX */
-#define USB_EPTX_STAT_Pos                       (4U)                           
-#define USB_EPTX_STAT_Msk                       (0x3U << USB_EPTX_STAT_Pos)    /*!< 0x00000030 */
-#define USB_EPTX_STAT                           USB_EPTX_STAT_Msk              /*!< EndPoint TX STATus bit field */
-#define USB_EPADDR_FIELD_Pos                    (0U)                           
-#define USB_EPADDR_FIELD_Msk                    (0xFU << USB_EPADDR_FIELD_Pos) /*!< 0x0000000F */
-#define USB_EPADDR_FIELD                        USB_EPADDR_FIELD_Msk           /*!< EndPoint ADDRess FIELD */
-/*
-5432 1098 7654 3210
-0111 0000 0111 0000 -- t      0x7070
-1000 0000 1000 0000 -- rc_w0  0x8080
-0000 0111 0000 1111 -- rw     0x070F
-0000 1000 0000 0000 -- r      0x0800
-*/
-
-#define USB_W_MASK  0x070F
-#define USB_W0_MASK 0x8080
-#define USB_T_MASK  0x7070
-#define USB_RO_MASK  0x0800
+#define USB_W_MASK  (USB_EP_T_FIELD_Msk | USB_EP_KIND_Msk | USB_EPADDR_FIELD_Msk)
+#define USB_W0_MASK (USB_EP_CTR_RX_Msk | USB_EP_CTR_TX_Msk)
+#define USB_T_MASK  (USB_EP_DTOG_RX_Msk | USB_EPRX_STAT_Msk | USB_EP_DTOG_TX_Msk | USB_EPTX_STAT_Msk)
+#define USB_RO_MASK (USB_EP_SETUP_Msk)
 
 #if ((USB_W_MASK & USB_W0_MASK) != 0) || ((USB_W_MASK & USB_T_MASK) != 0) || ((USB_T_MASK & USB_W0_MASK) != 0)
 #error "Masks have overlapping bits!"
