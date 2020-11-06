@@ -6,13 +6,6 @@ enum usb_stat_t {
 	STAT_VALID = 3,
 }
 
-enum usb_ep_type_t {
-	EP_TYPE_BULK = 0,
-	EP_TYPE_CONTROL = 1,
-	EP_TYPE_ISO = 2,
-	EP_TYPE_INTERRUPT = 3,
-}
-
 enum usb_ep_type_kind_t {
 	EP_TYPE_BULK =               0, // (0 << 1) | 0,
 	EP_TYPE_BULK_DBL_BUF=        1, // (0 << 1) | 1,
