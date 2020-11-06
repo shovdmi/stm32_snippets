@@ -1,10 +1,10 @@
 
 enum usb_stat_t {
 	STAT_DISABLED = 0,
-	STAT_STALL = 1,
-	STAT_NAK = 2,
-	STAT_VALID = 3,
-}
+	STAT_STALL =    1,
+	STAT_NAK =      2,
+	STAT_VALID =    3,
+};
 
 enum usb_ep_type_kind_t {
 	EP_TYPE_BULK =               0, // (0 << 1) | 0,
