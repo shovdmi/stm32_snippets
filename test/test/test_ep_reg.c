@@ -115,7 +115,7 @@ void test_ep_type_set_clear(void)
 		TEST_ASSERT_EQUAL_HEX16(type << USB_EP_T_FIELD_Pos, type << USB_EP_T_FIELD_Pos & ep);
 
 		new_type = ep_get_ep_type(ep);
-		TEST_ASSERT_EQUAL_HEX16(type << USB_EP_T_FIELD_Pos, type << USB_EP_T_FIELD_Pos & ep);
+		TEST_ASSERT_EQUAL_HEX16(type, new_type);
 
 		// clearing the bits
 		ep = USB->EP0R;
@@ -175,7 +175,7 @@ void test_ep_kind_set_clear(void)
 		TEST_ASSERT_EQUAL_HEX16(value << USB_EP_KIND_Pos, value << USB_EP_KIND_Pos & ep);
 
 		new_value = ep_get_ep_kind(ep);
-		TEST_ASSERT_EQUAL_HEX16(value << USB_EP_KIND_Pos, value << USB_EP_KIND_Pos & ep);
+		TEST_ASSERT_EQUAL_HEX16(value, new_value);
 
 		// clearing the bits
 		ep = USB->EP0R;
