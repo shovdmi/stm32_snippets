@@ -1,6 +1,8 @@
 #ifndef PMA_H
 #define PMA_H
 
+#include "stm32f1xx.h"
+
 #ifdef TEST_ON_TARGET
     #define PMA_ADDRESS ((uintptr_t)0x40006000)
 #else
@@ -15,6 +17,7 @@
 // https://gcc.gnu.org/onlinedocs/gccint/Machine-Modes.html
 // https://gist.github.com/maxymania/b14c617af5063a21d2b1c7e84d024c74#file-gcc-typedefs-c
 
+// SImode “Single Integer” mode represents a four-byte integer.
 typedef uint16_t __attribute__((mode(SI))) pma_uint16_t;
 
 

@@ -12,6 +12,13 @@
 #define PRE_BUF_LENGTH (16)
 #define POST_BUF_LENGTH (16)
 
+/*
+ * pool - is a hardware PMA memory or its simulation if test runs on PC
+ *
+ * inp_buf_pool - simulates user's application input buffer.
+ * PRE_BUF and POST_BUF are for tests of buffer overflowing
+ *
+ */
 
 uint8_t inp_buf_pool[PRE_BUF_LENGTH + PMA_BYTES_NUMBER + POST_BUF_LENGTH] = {0};
 uint8_t* const inp_buf = &inp_buf_pool[PRE_BUF_LENGTH];
@@ -23,10 +30,13 @@ int log_printf(char *fmt, uint32_t param)
 	return printf(fmt, param);
 }
 
+// (see below) PMA: 00 01        04 05        08 09        0C 0D
 void pma_pool_init(void)
 {
-	*(((pma_uint16_t*)PMA_ADDRESS) + 0) = 0xABCD;
-	*(((pma_uint16_t*)PMA_ADDRESS) + 4) = 0x147B;
+	for(size_t i=0; i < PMA_BYTES_NUMBER; i++) {
+		pma_uint16_t value =  (i*4) | (((i*4) + 1) << 8);
+		*(((pma_uint16_t*)PMA_ADDRESS) + i) = value;
+	}
 	return;
 }
 #else
@@ -41,6 +51,9 @@ void pma_pool_init(void)
 // 0x40006007    ---                  ||     // 0x40006007   pma[7]
 //  ...                               ||     //  ...
 #define PMA_SIZE (PMA_BYTES_NUMBER * PMA_MULT)
+#if (PMA_SIZE == 0)
+#error "PMA_SIZE is 0!"
+#endif
 
 uint8_t pool[PMA_SIZE];
 void pma_pool_init(void)
@@ -55,12 +68,18 @@ void pma_pool_init(void)
 
 //           pool: 00 01 02 03  04 05 06 07  08 09 0A 0B  0C 0D 0E 0F
 //expected[] ADDR: 00 01        04 05        08 09        0C 0D
-//            PMA: 00 01        02 03        04 05        06 07
+//            PMA: 00 01        04 05        08 09        0C 0D
 
 void setUp(void)
 {
 #ifdef RDIMON
 	initialise_monitor_handles();
+#endif
+#ifdef TEST_ON_TARGET
+	RCC->APB1ENR |= RCC_APB1ENR_USBEN;
+	USB->CNTR = USB_CNTR_FRES; // Forse Reset
+	USB->CNTR = 0;
+	USB->ISTR = 0;
 #endif
 	pma_pool_init();
 	log_printf("%c", '\n');
@@ -177,7 +196,7 @@ void test_read_from_pma_zero(void)
 	}
 }
 
-// PMA: 00 01        02 03        04 05        06 07
+// PMA: 00 01        04 05        08 09        0C 0D
 //                                 ^--shift=4
 void test_read_from_pma_shifted(void)
 {

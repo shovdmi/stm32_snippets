@@ -1,5 +1,14 @@
 set output-radix 16
+set pagination off
+set confirm off
+
+# You might have already experienced that when GDB needs to print more lines than your terminal height can display, it pauses each time the console is full. To prevent that and make GDB display all information at once, use the following settings
+set height 0
+set width 0
+
+
 target extended-remote :2331
-file build/test/out/test_ep_reg.elf
+# file build/test/out/test_ep_reg.elf
+file build/test/out/test_pma_read.elf
 load
 monitor semihosting enable
