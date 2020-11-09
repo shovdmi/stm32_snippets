@@ -4,6 +4,12 @@
 #include "pma.h"
 
 
+/**
+ *
+ * offset -- offset in bytes (in terms of PMA bytes)
+ * PMA:   00 01        04 05        08 09        0C 0D
+ * offset: 0  1         2  3         ^--offset=4
+ */
 uint16_t read_pma_u16_aligned(size_t offset)
 {
   pma_uint16_t *addr = ((pma_uint16_t*)(PMA_ADDRESS + (offset << 1)));
