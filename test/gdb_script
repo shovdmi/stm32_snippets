@@ -8,7 +8,11 @@ set width 0
 
 
 target extended-remote :2331
+
 # file build/test/out/test_ep_reg.elf
-file build/test/out/test_pma_read.elf
+file build/test/out/test_ep_functions.elf
+# file build/test/out/test_btable.elf
+# file build/test/out/test_pma_read.elf
+
 load
 monitor semihosting enable
