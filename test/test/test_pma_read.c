@@ -7,6 +7,7 @@
 
 #define LAST_INDEX(ARR) (sizeof(ARR) / sizeof(ARR[0]) - 1)
 
+#define PMA_MULT (sizeof(pma_uint16_t) / sizeof(uint16_t))
 #define PMA_BYTES_NUMBER (256)
 
 #define PRE_BUF_LENGTH (16)
@@ -24,12 +25,13 @@ uint8_t inp_buf_pool[PRE_BUF_LENGTH + PMA_BYTES_NUMBER + POST_BUF_LENGTH] = {0};
 uint8_t* const inp_buf = &inp_buf_pool[PRE_BUF_LENGTH];
 uint8_t expected[PMA_BYTES_NUMBER];
 
-#ifdef TEST_ON_TARGET
+
 int log_printf(char *fmt, uint32_t param)
 {
 	return printf(fmt, param);
 }
 
+#ifdef TEST_ON_TARGET
 // (see below) PMA: 00 01        04 05        08 09        0C 0D
 void pma_pool_init(void)
 {
@@ -51,9 +53,6 @@ void pma_pool_init(void)
 // 0x40006007    ---                  ||     // 0x40006007   pma[7]
 //  ...                               ||     //  ...
 #define PMA_SIZE (PMA_BYTES_NUMBER * PMA_MULT)
-#if (PMA_SIZE == 0)
-#error "PMA_SIZE is 0!"
-#endif
 
 uint8_t pool[PMA_SIZE];
 void pma_pool_init(void)
@@ -64,7 +63,6 @@ void pma_pool_init(void)
 }
 #endif
 
-#define PMA_MULT (sizeof(pma_uint16_t) / sizeof(uint16_t))
 
 //           pool: 00 01 02 03  04 05 06 07  08 09 0A 0B  0C 0D 0E 0F
 //expected[] ADDR: 00 01        04 05        08 09        0C 0D

@@ -1,9 +1,8 @@
 #ifndef PMA_H
 #define PMA_H
 
-#include "stm32f1xx.h"
-
 #ifdef TEST_ON_TARGET
+	#include "stm32f1xx.h"
     #define PMA_ADDRESS ((uintptr_t)0x40006000)
 #else
   #ifdef TEST
