@@ -4,16 +4,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
-//#include "ep.h"
 #include "pma.h"
 #include "btable.h"
 
-#define PMA_BYTES_NUMBER (256)
+
+
 #define PMA_MULT (sizeof(pma_uint16_t) / sizeof(uint16_t))
 
 #ifdef TEST_ON_TARGET
+#  define PMA_BYTES_NUMBER (256)
 #else
+   /* 1024 bytes is the longest packet size allowed by USB standard specifications.*/
+#  define PMA_BYTES_NUMBER (1024)
 #  define PMA_SIZE (PMA_BYTES_NUMBER * PMA_MULT)
 
    uint8_t pool[PMA_SIZE];
@@ -70,8 +72,8 @@ void _test_btable(const size_t btable_offset, const size_t step_size)
 								.rx_addr = addr_rx,
 								.rx_count= {.BL_SIZE_TYPE = bl_size, .NUM_BLOCK = num_block, .COUNT_RX = count_rx,},
 							};
-
-							/*log_printf("%c", '\n');
+#if 0
+							log_printf("%c", '\n');
 							for(size_t i=0; i < PMA_BYTES_NUMBER / PMA_MULT; i++)
 							{
 								if ( (i & 0x07UL ) == 0) {
@@ -85,7 +87,7 @@ void _test_btable(const size_t btable_offset, const size_t step_size)
 								log_printf(" %02X", (data >> 8) & 0xFF);
 							}
 							log_printf("%c",'\n');*/
-
+#endif
 							//uint16_t btable_expected[4] = { addr_tx, count_tx, addr_rx, (bl_size << 15) | (num_block << 10) | (count_rx << 0) };
 							//uint16_t btable_test[4];
 							//read_pma_aligned(USB->BTABLE, &btable_test[0], sizeof(btable_test));
@@ -139,7 +141,7 @@ void test_btable_8(void)
 		_test_btable(offset, 8);  // !! offset must be alligned by 0b1000 i.e 8 bytes
 	}
 }
-
+#if 0
 void test_btable_4(void)
 {
 	for (int offset = 0; offset < max_len - 64; offset += 8)
@@ -163,4 +165,4 @@ void test_btable_1(void)
 		_test_btable(offset, 1); // !! offset must be alligned by 0b1000 i.e 8 bytes
 	}
 }
-
+#endif
