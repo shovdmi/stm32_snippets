@@ -4,7 +4,7 @@
 //#include "debug.h"
 #include <stdint.h>
 #include "stm32f1xx.h"
-#include "bits_operation.h"
+#include "bit_ops.h"
 
 #ifdef TEST_ON_TARGET
 #define ASSERT(...)

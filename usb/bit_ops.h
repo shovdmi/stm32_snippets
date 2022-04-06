@@ -1,5 +1,5 @@
-#ifndef BITS_OPERATION_H
-#define BITS_OPERATION_H
+#ifndef BIT_OPS_H
+#define BIT_OPS_H
 
 #include <stdint.h>
 

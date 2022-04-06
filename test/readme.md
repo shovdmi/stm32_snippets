@@ -2,6 +2,8 @@ $ ceedling project:binary_search clean clobber test:test_binary_search test:find
 
 $ ceedling project:pma clean clobber test:test_pma
 
+## for bit_ops.h only tests :
+$ ceedling project:pma clean clobber test:bit_ops
 
 # Semihosting
 $ ceedling verbosity[4] project:arm_toolchain clean clobber test:test_pma_read test:test_ep_reg
