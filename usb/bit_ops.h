@@ -18,6 +18,12 @@ static __inline__ uint32_t w_write_bits(uint32_t value, uint32_t v_mask, uint32_
 	return result;
 }
 
+static __inline__ uint32_t w_modify_bits(uint32_t value, uint32_t v_mask, uint32_t rw_register)
+{
+	uint32_t result = w_write_bits(value, v_mask, rw_register, 0xFFFFFFFF);
+	return result;
+}
+
 static __inline__ uint32_t w_set_bits(uint32_t value, uint32_t rw_register, uint32_t rw_mask)
 {
 	value = value & rw_mask;
