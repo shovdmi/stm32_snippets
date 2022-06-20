@@ -54,35 +54,35 @@ uint16_t read_pma_u16(size_t offset)
 }
 
 
-void read_from_pma(size_t pma_bytes_offset, uint8_t *dest_buf, size_t len)
+void read_from_pma(size_t pma_bytes_offset, uint8_t *dest_u8_buf, size_t len)
 {
 	uint8_t *pma_src_buf = (uint8_t *)PMA_ADDRESS + pma_bytes_offset;
 	for (size_t i = 0; i<len/2; i++)
 	{
-		((uint16_t*)dest_buf)[i] = (uint16_t)(((uint32_t*)pma_src_buf)[i]);
+		((uint16_t*)dest_u8_buf)[i] = (uint16_t)(((uint32_t*)pma_src_buf)[i]);
 	}
 	if ((len & 0x01) == 0x01) { // i.e. len is odd
-		((uint8_t*)dest_buf)[len-1] = (uint8_t)(((uint32_t*)pma_src_buf)[len/2]);
+		dest_u8_buf[len-1] = (uint8_t)(((uint32_t*)pma_src_buf)[len/2]);
 	}
 }
 
-void read_from_pma_slow(size_t offset, void *dest_buf, size_t len)
+void read_from_pma_slow(size_t offset, uint8_t *dest_u8_buf, size_t len)
 {
 	for (size_t i = 0; i < len; i++ )
 	{
-		((uint8_t *)dest_buf)[i] = read_pma_u8(offset + i);
+		dest_u8_buf[i] = read_pma_u8(offset + i);
 	}
 }
 
-void read_pma_aligned(size_t offset, void *dest_buf, size_t length)
+void read_pma_aligned(size_t offset, uint16_t *dest_u16_buf, size_t length)
 {
 	for (size_t i = offset, j = 0 ; i < offset + length; i+=sizeof(uint16_t), j++)
 	{
-		((uint16_t*)dest_buf)[j] = read_pma_u16_aligned(i);
+		dest_u16_buf[j] = read_pma_u16_aligned(i);
 	}
 }
 
-void read_pma(size_t offset, void *dest_buf, size_t length)
+void read_pma(size_t offset, uint8_t *dest_u8_buf, size_t length)
 {
 	//assert(length > 0);
 	if (length == 0)
@@ -92,8 +92,8 @@ void read_pma(size_t offset, void *dest_buf, size_t length)
 
 	if (offset_lsb == 0x01U)
 	{
-		((uint8_t*)dest_buf)[0] = read_pma_u8(offset);
-		dest_buf = ((uint8_t*)dest_buf) + 1;
+		dest_u8_buf[0] = read_pma_u8(offset);
+		dest_u8_buf++;
 		length--;
 	}
 
@@ -103,10 +103,11 @@ void read_pma(size_t offset, void *dest_buf, size_t length)
 	size_t length_lsb = length & 0x01U;
 	size_t length_aligned = length - length_lsb;
 
-	read_pma_aligned(offset_aligned, dest_buf, length_aligned);
+	uint16_t *u16_buf = (uint16_t*)dest_u8_buf;
+	read_pma_aligned(offset_aligned, u16_buf, length_aligned);
 
 	if (length_lsb == 0x01U)
 	{
-		((uint8_t*)dest_buf)[length-1] = read_pma_u8(offset_aligned + length - 1);
+		dest_u8_buf[length-1] = read_pma_u8(offset_aligned + length - 1);
 	}
 }

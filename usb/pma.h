@@ -26,12 +26,12 @@ uint8_t read_pma_u8(size_t offset);
 
 uint16_t read_pma_u16(size_t offset);
 
-void read_from_pma(size_t pma_bytes_offset, uint8_t *dest_buf, size_t len);
+void read_from_pma(size_t pma_bytes_offset, uint8_t *dest_u8_buf, size_t len);
 
-void read_from_pma_slow(size_t offset, void *dest_buf, size_t len);
+void read_from_pma_slow(size_t offset, uint8_t *dest_u8_buf, size_t len);
 
-void read_pma_aligned(size_t offset, void *dest_buf, size_t len);
+void read_pma_aligned(size_t offset, uint16_t *dest_u16_buf, size_t len);
 
-void read_pma(size_t offset, void *dest_buf, size_t len);
+void read_pma(size_t offset, uint8_t *dest_u8_buf, size_t len);
 
 #endif // PMA_H

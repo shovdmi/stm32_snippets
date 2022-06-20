@@ -225,7 +225,8 @@ void test_read_from_pma_aligned_even_bytes_number(void)
 		for (size_t sz = 2; sz < (PMA_BYTES_NUMBER - shift); sz += 2)
 		{
 			memset(inp_buf_pool, 0, sizeof(inp_buf_pool));
-			read_pma_aligned(shift, inp_buf, sz);
+			uint16_t *u16_buf = (uint16_t*)inp_buf;
+			read_pma_aligned(shift, u16_buf, sz);
 			TEST_ASSERT_EQUAL_HEX8_ARRAY(expected + shift, inp_buf, sz);
 			TEST_ASSERT_EACH_EQUAL_HEX8(0x00, inp_buf + sz, PMA_BYTES_NUMBER - sz);
 
