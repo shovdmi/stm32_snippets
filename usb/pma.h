@@ -1,16 +1,12 @@
 #ifndef PMA_H
 #define PMA_H
 
-#ifdef TEST_ON_TARGET
-	#include "stm32f1xx.h"
-    #define PMA_ADDRESS ((uintptr_t)0x40006000)
-#else
-  #ifdef TEST
-	extern uint8_t pool[];
-    	#define PMA_ADDRESS (&pool[0])
-  #endif
-#endif
+#include "stdint.h"
+#include "string.h"
 
+#ifndef PMA_ADDRESS
+  #define PMA_ADDRESS ((uintptr_t)0x40006000)
+#endif
 
 // https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#Common-Variable-Attributes
 // https://gcc.gnu.org/onlinedocs/gccint/Machine-Modes.html

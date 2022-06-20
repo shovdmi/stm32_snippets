@@ -3,7 +3,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+
+#ifdef TEST_ON_TARGET
 #include "pma.h"
+#else
+#include "wrapper_pma.h"
+#endif
 
 #define LAST_INDEX(ARR) (sizeof(ARR) / sizeof(ARR[0]) - 1)
 

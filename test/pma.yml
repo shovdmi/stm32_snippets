@@ -4,6 +4,7 @@
     - -:test/support
   :source:
 #    - src/**
+     - wrapper_pma/**
      - ../usb/**
   :support:
     - test/support
@@ -17,6 +18,8 @@
   :test:
     - *common_defines
     - TEST
+    - PMA_ADDRESS='(&pool[0])'
   :test_preprocess:
     - *common_defines
     - TEST
+    - PMA_ADDRESS='(&pool[0])'
