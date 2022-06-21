@@ -4,7 +4,6 @@
 # Sample project C code is not presently written to produce a release artifact.
 # As such, release build options are disabled.
 # This sample, therefore, only demonstrates running a collection of unit tests.
-
 :project:
   :use_exceptions: FALSE
   :use_test_preprocessor: TRUE
@@ -117,6 +116,19 @@
       - -fdata-sections
 #      - --verbose
 
+  :pre_link_execute:
+     :executable: arm-none-eabi-gcc 
+     :arguments:
+       - '-mcpu=cortex-m3'
+       - -mthumb
+       - -Og
+       - -ggdb3
+       - --specs=nano.specs
+       - --specs=rdimon.specs
+       - "../stm32/startup.S"
+       - -c
+       - -o "../stm32/startup.o"  
+
   :test_linker:
     :executable: arm-none-eabi-gcc
     :arguments:
@@ -136,17 +148,40 @@
       - -Wl,--gc-sections
       - -Wl,-Map=output2.map
 #      - --verbose
-  :test_fixture:
-#     :executable: echo  #relative file path to command line simulator
-     :executable: arm-none-eabi-gdb  #relative file path to command line simulator
-     :name: 'gdb test fixture'
-     :stderr_redirect: :win                     #inform Ceedling what model of $stderr capture to use
+
+# https://github.com/ThrowTheSwitch/Ceedling/tree/master/plugins/command_hooks
+#
+  :pre_test_fixture_execute:
+     :executable: /opt/SEGGER/JLink_V698a/JLinkGDBServer
+     :name: 'gdb server test fixture'
+     :stderr_redirect: :none
+     :background_exec: :auto
      :arguments:
-        - "${1}"    #binary executable input file to simulator (Ruby method call param list sub)
-        - -x gdb_script
-        - -ex="b startup.S:115"
-        - -ex=continue
-        - -ex=quit
+        - -device STM32F103C6
+        - -if SWD
+        - -speed 4000
+        - -vd             # verify downloads
+        - -nogui
+        - -silent
+        - -singlerun
+        - -timeout 10  
+
+  :test_fixture:
+     :executable: ruby
+     :name: 'gdb server test fixture'
+     :stderr_redirect: :auto   #inform Ceedling what model of $stderr capture to use
+     :arguments:
+        - test/test_on_target_fixture.rb
+        - "${1}"
+
+#     :executable: arm-none-eabi-gdb 
+#     :name: 'gdb test fixture'
+#     :stderr_redirect: :tcsh   #inform Ceedling what model of $stderr capture to use
+#     :arguments:
+#        - "${1}"    #binary executable input file to simulator (Ruby method call param list sub)
+#        - -x gdb_script
+#        - -ex=continue
+#        - -quiet    # No greetings at the start
 
 # LIBRARIES
 # These libraries are automatically injected into the build process. Those specified as
@@ -166,4 +201,5 @@
   :enabled:
     - stdout_pretty_tests_report
     - module_generator
+    - command_hooks
 ...
