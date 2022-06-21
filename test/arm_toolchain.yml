@@ -136,12 +136,17 @@
       - -Wl,--gc-sections
       - -Wl,-Map=output2.map
 #      - --verbose
-  
-  :text_fixture:
-    :executable: arm-none-eabi-gdb
-    :arguments:
-      - -x gdb_script
-      - "{$1}"
+  :test_fixture:
+#     :executable: echo  #relative file path to command line simulator
+     :executable: arm-none-eabi-gdb  #relative file path to command line simulator
+     :name: 'gdb test fixture'
+     :stderr_redirect: :win                     #inform Ceedling what model of $stderr capture to use
+     :arguments:
+        - "${1}"    #binary executable input file to simulator (Ruby method call param list sub)
+        - -x gdb_script
+        - -ex="b startup.S:115"
+        - -ex=continue
+        - -ex=quit
 
 # LIBRARIES
 # These libraries are automatically injected into the build process. Those specified as
