@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #ifdef TEST_ON_TARGET
+#include "stm32f1xx.h"
 #include "pma.h"
 #else
 #include "wrapper_pma.h"

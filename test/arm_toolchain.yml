@@ -25,6 +25,9 @@
 #  :use_assembly: FALSE
 
 :environment:
+#  - :path:
+#  - -/opt/gcc-arm-none-eabi-10-2020-q4-major
+#  - "#{ENV['PATH']}"
 
 :extension:
   :executable: .elf
@@ -107,11 +110,12 @@
       - -fno-eliminate-unused-debug-symbols
       - -ggdb3
       - --specs=rdimon.specs
-      - -I"$": COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR
-      - -I"$": COLLECTION_PATHS_RELEASE_TOOLCHAIN_INCLUDE
-      - -D$: COLLECTION_DEFINES_TEST_AND_VENDOR
+      - -I"$": COLLECTION_PATHS_TEST_SUPPORT_SOURCE_INCLUDE_VENDOR #expands to -I search path
+      - -I"$": COLLECTION_PATHS_RELEASE_TOOLCHAIN_INCLUDE          #expands to -I search path
+      - -D$: COLLECTION_DEFINES_TEST_AND_VENDOR                    #expands to all -D defined symbols
       - -ffunction-sections
       - -fdata-sections
+#      - --verbose
 
   :test_linker:
     :executable: arm-none-eabi-gcc
@@ -121,15 +125,23 @@
 #      - --specs=nosys.specs
       - -Og
       - -ggdb3
+      - --specs=nano.specs
       - --specs=rdimon.specs
-      - -lrdimon
       - -T../stm32/STM32F103X6_FLASH.ld
       - "${1}"
       - ../stm32/startup.o
+      - -lrdimon
+      - -lc
       - -o "${2}"
       - -Wl,--gc-sections
       - -Wl,-Map=output2.map
-
+#      - --verbose
+  
+  :text_fixture:
+    :executable: arm-none-eabi-gdb
+    :arguments:
+      - -x gdb_script
+      - "{$1}"
 
 # LIBRARIES
 # These libraries are automatically injected into the build process. Those specified as
