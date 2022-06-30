@@ -7,6 +7,7 @@ set height 0
 set width 0
 #set  disassemble-next-line on
 
+
 target extended-remote :2331
 
 # file build/test/out/test_ep_reg.elf
@@ -17,20 +18,20 @@ target extended-remote :2331
 load
 
 break startup.S:115
-commands
-quit 0
-end
+#commands
+#quit 0
+#end
 
 # Suppresing GDBServer output
-set logging file /dev/null
-set logging redirect on
-set logging on
+#set logging file /dev/null
+#set logging redirect on
+#set logging on
 
 monitor semihosting enable
 #Select TELNET=1 port and GDB=2 as output source
 monitor semihosting ioclient 3
 
 # Turn suppression off
-set logging off
-set logging redirect off
+#set logging off
+#set logging redirect off
 
