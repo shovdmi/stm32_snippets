@@ -28,7 +28,7 @@ union USB_COUNTn_RX {
     pma_uint16_t COUNT_RX    : 10;
     pma_uint16_t NUM_BLOCK   :  5;
     pma_uint16_t BL_SIZE_TYPE:  1;//  If BL_SIZE=0, the memory block is 2 byte large. The allocated buffer size ranges from 2 to 62 bytes.
-                                 //  If BL_SIZE=1, the memory block is 32 byte large. The allocated buffer size ranges from 32 to 1024 bytes
+                                  //  If BL_SIZE=1, the memory block is 32 byte large. The allocated buffer size ranges from 32 to 1024 bytes
   }; // TODO: read about gcc flag for bits order in bit-struct
   pma_uint16_t value;
 };
