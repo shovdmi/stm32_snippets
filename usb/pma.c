@@ -56,7 +56,7 @@ uint16_t read_pma_u16(size_t offset)
 
 void read_from_pma(size_t pma_bytes_offset, uint8_t *dest_u8_buf, size_t len)
 {
-	uint8_t *pma_src_buf = (uint8_t *)PMA_ADDRESS + pma_bytes_offset;
+	uint8_t *pma_src_buf = (uint8_t *)PMA_ADDRESS + pma_bytes_offset * 2; //FIXME: *2, what if offset is odd?
 	for (size_t i = 0; i<len/2; i++)
 	{
 		((uint16_t*)dest_u8_buf)[i] = (uint16_t)(((uint32_t*)pma_src_buf)[i]);
