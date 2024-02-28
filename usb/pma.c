@@ -17,6 +17,11 @@ uint16_t read_pma_u16_aligned(size_t offset)
 	return val;
 }
 
+void write_pma_u16_aligned(size_t offset, uint16_t value)
+{
+	pma_uint16_t *addr = (pma_uint16_t*)PMA_ADDRESS + (offset / (sizeof (uint16_t)));
+    *addr = value;
+}
 //-----------------------------------------------------------------------------------------------
 
 uint8_t read_pma_u8(size_t offset)
@@ -35,6 +40,22 @@ uint8_t read_pma_u8(size_t offset)
 		val = read_pma_u16_aligned(offset);
 
   return val;
+}
+
+void write_pma_u8(size_t offset, uint8_t value)
+{
+	size_t offset_lsb = offset & 0x01U;
+    size_t offset_aligned = offset - offset_lsb;
+
+    uint16_t pma_val = read_pma_u16_aligned(offset_aligned);
+    
+    if (offset_lsb == 0x01U) {
+        pma_val &= 0xFF00 | value;
+    }
+    else {
+        pma_val &= 0x00FF | (value << 8);
+    }
+    write_pma_u16_aligned(offset_aligned, pma_val);
 }
 
 uint16_t read_pma_u16(size_t offset)
@@ -82,6 +103,15 @@ void read_pma_aligned(size_t offset, uint16_t *dest_u16_buf, size_t length)
 	}
 }
 
+void write_pma_aligned(size_t offset, const uint16_t *src_buf, size_t length)
+{
+    // Iterate over two uint8_t (i.e. uint16_t) elements
+    for (int i = 0; i < length; ++i) {
+        const uint16_t value = src_buf[i];
+        write_pma_u16_aligned(offset + i * sizeof(uint16_t), value);
+    }
+}
+
 void read_pma(size_t offset, uint8_t *dest_u8_buf, size_t length)
 {
 	//assert(length > 0);
@@ -103,6 +133,7 @@ void read_pma(size_t offset, uint8_t *dest_u8_buf, size_t length)
 	size_t length_lsb = length & 0x01U;
 	size_t length_aligned = length - length_lsb;
 
+	// Reading from aligned offset of PMA data
 	uint16_t *u16_buf = (uint16_t*)dest_u8_buf;
 	read_pma_aligned(offset_aligned, u16_buf, length_aligned);
 
@@ -112,19 +143,30 @@ void read_pma(size_t offset, uint8_t *dest_u8_buf, size_t length)
 	}
 }
 
-
-
-void write_to_pma(const uint8_t *src_buf, uint16_t pma_bytes_offset, int N)
+void write_pma(size_t pma_offset, const uint8_t *src_buf, size_t length)
 {
-    //assert((pma_bytes_offset & (0xFFFFu << 1)) != pma_bytes_offset);
-    if ((pma_bytes_offset & (0xFFFFu << 1)) != pma_bytes_offset) { __asm__("bkpt"); }
-    //assert(pma_bytes_offset >= 512);
-    //assert(pma_bytes_offset + N > 512);
-	
-    pma_uint16_t *dest_buf = (pma_uint16_t*)PMA_ADDRESS + (pma_bytes_offset / (sizeof(uint16_t)));
+    size_t offset_lsb = pma_offset & 0x01U;
 
-    for (int i = 0; i < (N + 1) / 2; i++) 
+	if (offset_lsb == 0x01U)
+	{
+    	write_pma_u8(pma_offset, src_buf[0]);
+		src_buf++;
+		length--;
+	}
+
+	// Here we increase offset to be aligned to 16bit
+    size_t offset_aligned = pma_offset + offset_lsb;
+
+	size_t length_lsb = length & 0x01U;
+	size_t length_aligned = length - length_lsb;
+
+	// Writing at an aligned offset of the PMA data
+	uint16_t *u16_buf = (uint16_t*)src_buf;
+    write_pma_aligned(offset_aligned, u16_buf, length_aligned / sizeof(uint16_t)); 
+
+	// Write the last byte, if any
+    if (length_lsb == 0x01U)
     {
-        ((pma_uint16_t*)dest_buf)[i]  = ((uint16_t*)src_buf)[i];
-    }	
+        write_pma_u8(offset_aligned + length - 1, src_buf[length - 1]);
+    }
 }
