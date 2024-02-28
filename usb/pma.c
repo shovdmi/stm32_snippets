@@ -3,6 +3,10 @@
 #include <string.h>
 #include "pma.h"
 
+#ifndef ASSERT
+#define ASSERT(...)
+#endif
+
 
 /**
  *
@@ -114,7 +118,7 @@ void write_pma_aligned(size_t offset, const uint16_t *src_buf, size_t length)
 
 void read_pma(size_t offset, uint8_t *dest_u8_buf, size_t length)
 {
-	//assert(length > 0);
+	ASSERT(length > 0);
 	if (length == 0)
 		return;
 	
@@ -134,6 +138,7 @@ void read_pma(size_t offset, uint8_t *dest_u8_buf, size_t length)
 	size_t length_aligned = length - length_lsb;
 
 	// Reading from aligned offset of PMA data
+    ASSERT(((unsigned)dest_u8_buf & ~0x01U) == (unsigned)dest_u8_buf); // Comment this out when you are sure the MCU supports unaligned or one-byte reading accesses 
 	uint16_t *u16_buf = (uint16_t*)dest_u8_buf;
 	read_pma_aligned(offset_aligned, u16_buf, length_aligned);
 
@@ -161,6 +166,7 @@ void write_pma(size_t pma_offset, const uint8_t *src_buf, size_t length)
 	size_t length_aligned = length - length_lsb;
 
 	// Writing at an aligned offset of the PMA data
+    ASSERT(((unsigned)src_buf & ~0x01U) == (unsigned)src_buf); // Comment this out when you are sure the MCU supports unaligned or one-byte reading accesses 
 	uint16_t *u16_buf = (uint16_t*)src_buf;
     write_pma_aligned(offset_aligned, u16_buf, length_aligned / sizeof(uint16_t)); 
 
