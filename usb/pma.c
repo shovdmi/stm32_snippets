@@ -12,9 +12,9 @@
  */
 uint16_t read_pma_u16_aligned(size_t offset)
 {
-  pma_uint16_t *addr = ((pma_uint16_t*)(PMA_ADDRESS + (offset << 1)));
-  pma_uint16_t val = *addr;
-  return val;
+	pma_uint16_t *addr = (pma_uint16_t*)PMA_ADDRESS + (offset / (sizeof (uint16_t)));
+	pma_uint16_t val = *addr;
+	return val;
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ uint16_t read_pma_u16(size_t offset)
 
 void read_from_pma(size_t pma_bytes_offset, uint8_t *dest_u8_buf, size_t len)
 {
-	uint8_t *pma_src_buf = (uint8_t *)PMA_ADDRESS + pma_bytes_offset * 2; //FIXME: *2, what if offset is odd?
+	uint8_t *pma_src_buf = (uint8_t *)PMA_ADDRESS + pma_bytes_offset;
 	for (size_t i = 0; i<len/2; i++)
 	{
 		((uint16_t*)dest_u8_buf)[i] = (uint16_t)(((uint32_t*)pma_src_buf)[i]);
@@ -110,4 +110,21 @@ void read_pma(size_t offset, uint8_t *dest_u8_buf, size_t length)
 	{
 		dest_u8_buf[length-1] = read_pma_u8(offset_aligned + length - 1);
 	}
+}
+
+
+
+void write_to_pma(const uint8_t *src_buf, uint16_t pma_bytes_offset, int N)
+{
+    //assert((pma_bytes_offset & (0xFFFFu << 1)) != pma_bytes_offset);
+    if ((pma_bytes_offset & (0xFFFFu << 1)) != pma_bytes_offset) { __asm__("bkpt"); }
+    //assert(pma_bytes_offset >= 512);
+    //assert(pma_bytes_offset + N > 512);
+	
+    pma_uint16_t *dest_buf = (pma_uint16_t*)PMA_ADDRESS + (pma_bytes_offset / (sizeof(uint16_t)));
+
+    for (int i = 0; i < (N + 1) / 2; i++) 
+    {
+        ((pma_uint16_t*)dest_buf)[i]  = ((uint16_t*)src_buf)[i];
+    }	
 }

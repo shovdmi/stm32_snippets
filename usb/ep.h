@@ -3,7 +3,7 @@
 
 //#include "debug.h"
 #include <stdint.h>
-#include "stm32f1xx.h"
+#include "stm32.h"
 #include "bit_ops.h"
 
 #ifdef TEST_ON_TARGET

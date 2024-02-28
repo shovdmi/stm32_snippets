@@ -1,7 +1,7 @@
+/*
 #include "ep.h"
 
 
-/*
 inline uint16_t ep_read_value(uint8_t ep_number)
 {
 	volatile uint32_t *ep_ptr = (uint32_t*)&USB->EP0R;
