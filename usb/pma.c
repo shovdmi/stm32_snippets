@@ -184,3 +184,15 @@ void write_pma(size_t pma_offset, const uint8_t *src_buf, size_t length)
         write_pma_u8(offset_aligned + length - 1, src_buf[length - 1]);
     }
 }
+
+void copy_pma_aligned(size_t pma_offset_src, size_t pma_offset_dst, size_t length)
+{
+	ASSERT(length > 0);
+	ASSERT(pma_offset_src & 0x01U == 0);
+	ASSERT(pma_offset_dst & 0x01U == 0);
+
+	for (size_t i = 0; i < length; i += sizeof(uint16_t)) {
+		uint16_t val = read_pma_u16_aligned(pma_offset_src);
+		write_pma_u16_aligned(pma_offset_dst, val);
+	}
+}

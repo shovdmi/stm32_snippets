@@ -100,5 +100,6 @@ void read_pma_aligned(size_t offset, uint16_t *dest_u16_buf, size_t len);
 
 void read_pma(size_t offset,       uint8_t *dest_u8_buf, size_t len);
 void write_pma(size_t offset, const uint8_t *src_buf, size_t len);
+void copy_pma_aligned(size_t pma_offset_src, size_t pma_offset_dst, size_t length);
 
 #endif // PMA_H
