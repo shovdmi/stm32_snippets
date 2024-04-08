@@ -101,9 +101,17 @@ void read_from_pma_slow(size_t offset, uint8_t *dest_u8_buf, size_t len)
 
 void read_pma_aligned(size_t offset, uint16_t *dest_u16_buf, size_t length)
 {
-	for (size_t i = offset, j = 0 ; i < offset + length; i+=sizeof(uint16_t), j++)
+	/*for (size_t i = offset, j = 0 ; i < offset + length; i+=sizeof(uint16_t), j++)
 	{
 		dest_u16_buf[j] = read_pma_u16_aligned(i);
+	} */
+
+	size_t i = offset;
+	size_t j = 0;
+	while (i < offset + length) {
+		dest_u16_buf[j] = read_pma_u16_aligned(i);
+		 i+=sizeof(uint16_t); 
+		j++;
 	}
 }
 
